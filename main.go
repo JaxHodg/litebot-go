@@ -42,6 +42,7 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 	if message.Author.Bot {
 		return
 	}
+
 	if message.Content[0] == '!' {
 		cmdMsg := strings.TrimPrefix(message.Content, "!")
 		cmd := strings.Split(cmdMsg, " ")

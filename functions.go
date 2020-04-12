@@ -1,11 +1,11 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
-
-func MemberHasPermission(s *discordgo.Session, guildID string, userID string, permission int) (bool, error) {
-	member, err := s.State.Member(guildID, userID)
+func MemberHasPermission(env *CommandEnvironment, permission int) (bool, error) { //TODO: Check for admin
+	guildID := env.message.GuildID
+	userID := env.message.Author.ID
+	member, err := env.session.State.Member(guildID, userID)
 	if err != nil {
-		if member, err = s.GuildMember(guildID, userID); err != nil {
+		if member, err = env.session.GuildMember(guildID, userID); err != nil {
 			return false, err
 		}
 	}
@@ -13,7 +13,7 @@ func MemberHasPermission(s *discordgo.Session, guildID string, userID string, pe
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
 	for _, roleID := range member.Roles {
-		role, err := s.State.Role(guildID, roleID)
+		role, err := env.session.State.Role(guildID, roleID)
 		if err != nil {
 			return false, err
 		}

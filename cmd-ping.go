@@ -1,5 +1,5 @@
 package main
 
-func cmdPing([]string, *CommandEnvironment) string {
+func cmdPing(args []string, env *CommandEnvironment) string {
 	return "pong"
 }
