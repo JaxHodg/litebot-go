@@ -42,25 +42,29 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 	if message.Author.Bot {
 		return
 	}
+
 	channel, err := session.State.Channel(message.ChannelID)
 	if err != nil {
 		return //Error finding the channel
 	}
+
 	guild, err := session.State.Guild(channel.GuildID)
 	if err != nil {
-		return //Error finding the guild
+		return
 	}
+
 	content := message.Content
 	if content == "" {
 		return //The message was empty
 	}
+
 	member, err := session.GuildMember(guild.ID, message.Author.ID)
 	if err != nil {
 		return //Error finding the guild member
 	}
 
-	if message.Content[0] == '!' {
-		cmdMsg := strings.TrimPrefix(message.Content, "!")
+	if content[0] == '!' {
+		cmdMsg := strings.TrimPrefix(content, "!")
 		cmd := strings.Split(cmdMsg, " ")
 
 		commandEnvironment := &CommandEnvironment{session, event, channel, guild, message, member.User, member}

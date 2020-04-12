@@ -30,3 +30,11 @@ func NewGenericEmbed(embedTitle, embedMsg string) *discordgo.MessageEmbed {
 	genericEmbed.Color = 0xD8DEE9
 	return genericEmbed
 }
+
+func NewErrorEmbed(embedMsg string) *discordgo.MessageEmbed {
+	errorEmbed := &discordgo.MessageEmbed{}
+	errorEmbed.Title = "ERROR"
+	errorEmbed.Description = embedMsg
+	errorEmbed.Color = 0xBF616A
+	return errorEmbed
+}

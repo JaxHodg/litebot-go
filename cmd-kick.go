@@ -11,13 +11,13 @@ func cmdKick(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 	user := re.FindString(args[0])
 
 	if user == "" {
-		return NewGenericEmbed("Error:", "You must specify a user")
+		return NewErrorEmbed("You must specify a user")
 	}
 
 	err := env.session.GuildMemberDelete(env.Guild.ID, user)
 
 	if err != nil {
-		return NewGenericEmbed("Error:", "Unable to kick user")
+		return NewErrorEmbed("Unable to kick user")
 	}
 
 	return NewGenericEmbed("Kick", "Kicked "+user)

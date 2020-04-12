@@ -16,10 +16,12 @@ type CommandEnvironment struct {
 	User    *discordgo.User    //The user that executed the command
 	Member  *discordgo.Member  //The guild member that executed the command
 }
+
 type Command struct {
 	Function    func([]string, *CommandEnvironment) *discordgo.MessageEmbed
 	Description string
 
+	GuildOnly           bool
 	RequiredPermissions int
 }
 
@@ -31,17 +33,26 @@ func InitCommands() {
 	Commands["kick"] = &Command{
 		Function:            cmdKick,
 		Description:         "Kicks the mentioned user",
-		RequiredPermissions: discordgo.PermissionKickMembers}
+		RequiredPermissions: discordgo.PermissionKickMembers,
+		GuildOnly:           true}
 	Commands["ban"] = &Command{
 		Function:            cmdBan,
 		Description:         "Bans the mentioned user",
-		RequiredPermissions: discordgo.PermissionBanMembers}
+		RequiredPermissions: discordgo.PermissionBanMembers,
+		GuildOnly:           true}
 }
+
 func CallCommand(commandName string, args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 	if command, exists := Commands[commandName]; exists {
+		if command.GuildOnly {
+			if env.Guild.ID == "" {
+
+				return NewErrorEmbed("This command is for servers only")
+			}
+		}
 		if command.RequiredPermissions != 0 {
 			if permissionsAllowed, isAdmin, _ := MemberHasPermission(env, command.RequiredPermissions); !permissionsAllowed && !isAdmin {
-				return NewGenericEmbed("Error", "You do not have the required permissions to use "+commandName)
+				return NewErrorEmbed("You do not have the required permissions to use " + commandName)
 			}
 		}
 		return command.Function(args, env)

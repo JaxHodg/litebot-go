@@ -8,6 +8,8 @@ import (
 
 func cmdHelp(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 	helpEmbed := &discordgo.MessageEmbed{}
+	helpEmbed.Color = 0xEBCB8B
+
 	var commandName string
 
 	if len(args) != 0 {
@@ -16,13 +18,13 @@ func cmdHelp(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 		commandName = ""
 	}
 
-	if Commands[commandName] != nil {
+	if command, exists := Commands[commandName]; exists {
 		helpEmbed.Title = strings.ToUpper(commandName)
 
 		helpEmbed.Fields = []*discordgo.MessageEmbedField{
 			&discordgo.MessageEmbedField{
 				Name:  "Description",
-				Value: Commands[commandName].Description}}
+				Value: command.Description}}
 
 	} else {
 		helpEmbed.Title = "Help"
