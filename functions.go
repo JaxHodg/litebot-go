@@ -1,26 +1,24 @@
 package main
 
-func MemberHasPermission(env *CommandEnvironment, permission int) (bool, error) { //TODO: Check for admin
-	guildID := env.message.GuildID
-	userID := env.message.Author.ID
-	member, err := env.session.State.Member(guildID, userID)
-	if err != nil {
-		if member, err = env.session.GuildMember(guildID, userID); err != nil {
-			return false, err
-		}
-	}
+import (
+	"github.com/bwmarrin/discordgo"
+)
 
+func MemberHasPermission(env *CommandEnvironment, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
-	for _, roleID := range member.Roles {
-		role, err := env.session.State.Role(guildID, roleID)
+	for _, roleID := range env.Member.Roles {
+		role, err := env.session.State.Role(env.Guild.ID, roleID)
 		if err != nil {
-			return false, err
+			return false, false, err
 		}
 		if role.Permissions&permission != 0 {
-			return true, nil
+			if role.Permissions&discordgo.PermissionAdministrator != 0 {
+				return true, true, nil
+			}
+			return true, false, nil
 		}
 	}
 
-	return false, nil
+	return false, false, nil
 }

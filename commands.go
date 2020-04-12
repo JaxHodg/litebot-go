@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -9,22 +11,17 @@ var Commands map[string]*Command
 type CommandEnvironment struct {
 	session *discordgo.Session
 	event   *discordgo.MessageCreate
-	message *discordgo.Message
+
+	Channel *discordgo.Channel //The channel the command was executed in
+	Guild   *discordgo.Guild   //The guild the command was executed in
+	Message *discordgo.Message //The message that triggered the command execution
+	User    *discordgo.User    //The user that executed the command
+	Member  *discordgo.Member  //The guild member that executed the command
 }
 type Command struct {
 	Function func([]string, *CommandEnvironment) string
 
-	Arguments           []CommandArgument
 	RequiredPermissions int
-}
-type CommandArgument struct {
-	//Used for help text
-	Name        string //The name of the argument
-	ArgType     string //The argument's type
-	Description string //A description of the argument
-
-	//Used for command argument parsing
-	Value string //The value supplied with the argument
 }
 
 func InitCommands() {
@@ -33,19 +30,18 @@ func InitCommands() {
 	Commands["ping"] = &Command{Function: cmdPing}
 	Commands["kick"] = &Command{
 		Function:            cmdKick,
-		RequiredPermissions: discordgo.PermissionKickMembers,
-		Arguments: []CommandArgument{
-			{Name: "user", ArgType: "mention"}},
-	}
+		RequiredPermissions: discordgo.PermissionKickMembers}
+	Commands["ban"] = &Command{
+		Function:            cmdBan,
+		RequiredPermissions: discordgo.PermissionBanMembers}
 }
 func CallCommand(commandName string, args []string, env *CommandEnvironment) string {
 	if command, exists := Commands[commandName]; exists {
 		if command.RequiredPermissions != 0 {
-			if permissionsAllowed, _ := MemberHasPermission(env, command.RequiredPermissions); !permissionsAllowed {
-				return "Error, you do not have the required permissions to use " + commandName
+			if permissionsAllowed, isAdmin, _ := MemberHasPermission(env, command.RequiredPermissions); !permissionsAllowed && !isAdmin {
+				return "Error, you do not have the required permissions to use " + commandName + strconv.FormatBool(permissionsAllowed) + strconv.FormatBool(isAdmin)
 			}
 		}
-
 		return command.Function(args, env)
 	}
 	return ""

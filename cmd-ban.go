@@ -4,7 +4,7 @@ import (
 	"regexp"
 )
 
-func cmdKick(args []string, env *CommandEnvironment) string {
+func cmdBan(args []string, env *CommandEnvironment) string {
 	re := regexp.MustCompile(`[<][@][!](\d*)[>]`)
 	user := re.FindString(args[0])
 
@@ -12,11 +12,11 @@ func cmdKick(args []string, env *CommandEnvironment) string {
 		return "Error: You must specify a user"
 	}
 
-	err := env.session.GuildMemberDelete(env.Guild.ID, user)
+	err := env.session.GuildBanCreate(env.Guild.ID, user, 0)
 
 	if err != nil {
-		return "Error kicking " + user
+		return "Error banning " + user
 	}
 
-	return "Kicked " + user
+	return "Banned " + user
 }

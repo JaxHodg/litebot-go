@@ -31,7 +31,7 @@ func main() {
 	dg.Close()
 }
 func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
-	message, err := session.ChannelMessage(event.ChannelID, event.ID) //Make it easier to keep track of what's happening
+	message, err := session.ChannelMessage(event.ChannelID, event.ID)
 	if err != nil {
 		return //Error finding message
 	}
@@ -42,12 +42,29 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 	if message.Author.Bot {
 		return
 	}
+	channel, err := session.State.Channel(message.ChannelID)
+	if err != nil {
+		return //Error finding the channel
+	}
+	guild, err := session.State.Guild(channel.GuildID)
+	if err != nil {
+		return //Error finding the guild
+	}
+	content := message.Content
+	if content == "" {
+		return //The message was empty
+	}
+	member, err := session.GuildMember(guild.ID, message.Author.ID)
+	if err != nil {
+		return //Error finding the guild member
+	}
 
 	if message.Content[0] == '!' {
 		cmdMsg := strings.TrimPrefix(message.Content, "!")
 		cmd := strings.Split(cmdMsg, " ")
 
-		commandEnvironment := &CommandEnvironment{session, event, message}
+		commandEnvironment := &CommandEnvironment{session, event, channel, guild, message, member.User, member}
+
 		response := CallCommand(cmd[0], cmd[1:], commandEnvironment)
 
 		if response != "" {
