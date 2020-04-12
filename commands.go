@@ -26,6 +26,7 @@ type Command struct {
 func InitCommands() {
 	Commands = make(map[string]*Command)
 
+	Commands["help"] = &Command{Function: cmdHelp, Description: "Displays this message"}
 	Commands["ping"] = &Command{Function: cmdPing, Description: "Displays the ping"}
 	Commands["kick"] = &Command{
 		Function:            cmdKick,
