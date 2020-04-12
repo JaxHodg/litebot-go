@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -42,10 +43,15 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 		return
 	}
 	if message.Content[0] == '!' {
-		commandName := "ping" //TODO: Regex
-		commandEnvironment := &CommandEnvironment{session, event}
-		response := CallCommand(commandName, commandEnvironment)
-		session.ChannelMessageSend(event.ChannelID, response)
+		cmdMsg := strings.TrimPrefix(message.Content, "!")
+		cmd := strings.Split(cmdMsg, " ")
+
+		commandEnvironment := &CommandEnvironment{session, event, message}
+		response := CallCommand(cmd[0], cmd[1:], commandEnvironment)
+
+		if response != "" {
+			session.ChannelMessageSend(event.ChannelID, response)
+		}
 	}
 
 }
