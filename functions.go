@@ -22,3 +22,11 @@ func MemberHasPermission(env *CommandEnvironment, permission int) (bool, bool, e
 
 	return false, false, nil
 }
+
+func NewGenericEmbed(embedTitle, embedMsg string) *discordgo.MessageEmbed {
+	genericEmbed := &discordgo.MessageEmbed{}
+	genericEmbed.Title = embedTitle
+	genericEmbed.Description = embedMsg
+	genericEmbed.Color = 0xD8DEE9
+	return genericEmbed
+}

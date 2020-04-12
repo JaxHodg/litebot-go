@@ -1,5 +1,7 @@
 package main
 
-func cmdPing(args []string, env *CommandEnvironment) string {
-	return "pong"
+import "github.com/bwmarrin/discordgo"
+
+func cmdPing(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
+	return NewGenericEmbed("Ping", "Pong")
 }

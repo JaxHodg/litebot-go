@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strconv"
-
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -19,7 +17,8 @@ type CommandEnvironment struct {
 	Member  *discordgo.Member  //The guild member that executed the command
 }
 type Command struct {
-	Function func([]string, *CommandEnvironment) string
+	Function    func([]string, *CommandEnvironment) *discordgo.MessageEmbed
+	Description string
 
 	RequiredPermissions int
 }
@@ -27,22 +26,24 @@ type Command struct {
 func InitCommands() {
 	Commands = make(map[string]*Command)
 
-	Commands["ping"] = &Command{Function: cmdPing}
+	Commands["ping"] = &Command{Function: cmdPing, Description: "Displays the ping"}
 	Commands["kick"] = &Command{
 		Function:            cmdKick,
+		Description:         "Kicks the mentioned user",
 		RequiredPermissions: discordgo.PermissionKickMembers}
 	Commands["ban"] = &Command{
 		Function:            cmdBan,
+		Description:         "Bans the mentioned user",
 		RequiredPermissions: discordgo.PermissionBanMembers}
 }
-func CallCommand(commandName string, args []string, env *CommandEnvironment) string {
+func CallCommand(commandName string, args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 	if command, exists := Commands[commandName]; exists {
 		if command.RequiredPermissions != 0 {
 			if permissionsAllowed, isAdmin, _ := MemberHasPermission(env, command.RequiredPermissions); !permissionsAllowed && !isAdmin {
-				return "Error, you do not have the required permissions to use " + commandName + strconv.FormatBool(permissionsAllowed) + strconv.FormatBool(isAdmin)
+				return NewGenericEmbed("Error", "You do not have the required permissions to use "+commandName)
 			}
 		}
 		return command.Function(args, env)
 	}
-	return ""
+	return nil
 }

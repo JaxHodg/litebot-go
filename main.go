@@ -67,8 +67,8 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 
 		response := CallCommand(cmd[0], cmd[1:], commandEnvironment)
 
-		if response != "" {
-			session.ChannelMessageSend(event.ChannelID, response)
+		if response != nil {
+			session.ChannelMessageSendEmbed(event.ChannelID, response)
 		}
 	}
 
