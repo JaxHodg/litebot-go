@@ -12,6 +12,7 @@ import (
 
 func main() {
 	dg, err := discordgo.New("Bot " + "NTI4NDYwNDc4ODgwNjc3OTAz.XpJmiA.pIXI-9kFLN0KUIfEB-IiPIeoP3Q")
+
 	dg.AddHandler(discordMessageCreate)
 
 	err = dg.Open()
@@ -32,6 +33,7 @@ func main() {
 }
 
 func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
+
 	message, err := session.ChannelMessage(event.ChannelID, event.ID)
 	if err != nil {
 		return //Error finding message
@@ -56,8 +58,8 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 
 	Dm := CheckIfDm(session, event)
 
-	var guild *discordgo.Guild
-	var member *discordgo.Member
+	var guild *discordgo.Guild = nil
+	var member *discordgo.Member = nil
 	if !Dm {
 		guild, err = session.State.Guild(channel.GuildID)
 		if err != nil {

@@ -27,12 +27,12 @@ func MemberHasPermission(env *CommandEnvironment, permission int) (bool, bool, e
 //CheckIfDm returns true if the message came from a Dm
 func CheckIfDm(s *discordgo.Session, m *discordgo.MessageCreate) bool {
 	channel, err := s.State.Channel(m.ChannelID)
+
 	if err != nil {
 		if channel, err = s.Channel(m.ChannelID); err != nil {
 			return false
 		}
 	}
-
 	return channel.Type == discordgo.ChannelTypeDM
 }
 
