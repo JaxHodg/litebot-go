@@ -30,6 +30,7 @@ func main() {
 	// Cleanly close down the Discord session.
 	dg.Close()
 }
+
 func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
 	message, err := session.ChannelMessage(event.ChannelID, event.ID)
 	if err != nil {
@@ -37,10 +38,10 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 	}
 
 	if message.Author.ID == session.State.User.ID {
-		return
+		return //Don't respond to itself
 	}
 	if message.Author.Bot {
-		return
+		return //Don't respond to bots
 	}
 
 	channel, err := session.State.Channel(message.ChannelID)
@@ -48,26 +49,31 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 		return //Error finding the channel
 	}
 
-	guild, err := session.State.Guild(channel.GuildID)
-	if err != nil {
-		return
-	}
-
 	content := message.Content
 	if content == "" {
 		return //The message was empty
 	}
 
-	member, err := session.GuildMember(guild.ID, message.Author.ID)
-	if err != nil {
-		return //Error finding the guild member
+	Dm := CheckIfDm(session, event)
+
+	var guild *discordgo.Guild
+	var member *discordgo.Member
+	if !Dm {
+		guild, err = session.State.Guild(channel.GuildID)
+		if err != nil {
+			return
+		}
+		member, err = session.GuildMember(guild.ID, message.Author.ID)
+		if err != nil {
+			return //Error finding the guild member
+		}
 	}
 
 	if content[0] == '!' {
 		cmdMsg := strings.TrimPrefix(content, "!")
 		cmd := strings.Split(cmdMsg, " ")
 
-		commandEnvironment := &CommandEnvironment{session, event, channel, guild, message, member.User, member}
+		commandEnvironment := &CommandEnvironment{Dm, session, event, channel, guild, message, member.User, member}
 
 		response := CallCommand(cmd[0], cmd[1:], commandEnvironment)
 

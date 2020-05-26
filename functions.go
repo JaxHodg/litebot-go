@@ -4,6 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+// MemberHasPermission returns whether a member has the requested permission and whether they have admin
 func MemberHasPermission(env *CommandEnvironment, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
@@ -23,6 +24,19 @@ func MemberHasPermission(env *CommandEnvironment, permission int) (bool, bool, e
 	return false, false, nil
 }
 
+//CheckIfDm returns true if the message came from a Dm
+func CheckIfDm(s *discordgo.Session, m *discordgo.MessageCreate) bool {
+	channel, err := s.State.Channel(m.ChannelID)
+	if err != nil {
+		if channel, err = s.Channel(m.ChannelID); err != nil {
+			return false
+		}
+	}
+
+	return channel.Type == discordgo.ChannelTypeDM
+}
+
+//NewGenericEmbed returns a generic embed
 func NewGenericEmbed(embedTitle, embedMsg string) *discordgo.MessageEmbed {
 	genericEmbed := &discordgo.MessageEmbed{}
 	genericEmbed.Title = embedTitle
@@ -31,6 +45,7 @@ func NewGenericEmbed(embedTitle, embedMsg string) *discordgo.MessageEmbed {
 	return genericEmbed
 }
 
+//NewErrorEmbed returns an error embed
 func NewErrorEmbed(embedMsg string) *discordgo.MessageEmbed {
 	errorEmbed := &discordgo.MessageEmbed{}
 	errorEmbed.Title = "ERROR"

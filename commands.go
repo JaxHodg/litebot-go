@@ -4,9 +4,13 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+// Commands is a list of all possible Commands
 var Commands map[string]*Command
 
+// CommandEnvironment is a struct that contains all the info a command needs to run
 type CommandEnvironment struct {
+	Dm bool
+
 	session *discordgo.Session
 	event   *discordgo.MessageCreate
 
@@ -17,6 +21,7 @@ type CommandEnvironment struct {
 	Member  *discordgo.Member  //The guild member that executed the command
 }
 
+// Command is a struct that contains all the data about a command
 type Command struct {
 	Function    func([]string, *CommandEnvironment) *discordgo.MessageEmbed
 	Description string
@@ -25,6 +30,7 @@ type Command struct {
 	RequiredPermissions int
 }
 
+// InitCommands creates all the commands and adds the to the slice
 func InitCommands() {
 	Commands = make(map[string]*Command)
 
@@ -42,13 +48,11 @@ func InitCommands() {
 		GuildOnly:           true}
 }
 
+// CallCommand calls the command and returns the embed it generates
 func CallCommand(commandName string, args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 	if command, exists := Commands[commandName]; exists {
-		if command.GuildOnly {
-			if env.Guild.ID == "" {
-
-				return NewErrorEmbed("This command is for servers only")
-			}
+		if command.GuildOnly && env.Dm {
+			return NewErrorEmbed("This command is for servers only")
 		}
 		if command.RequiredPermissions != 0 {
 			if permissionsAllowed, isAdmin, _ := MemberHasPermission(env, command.RequiredPermissions); !permissionsAllowed && !isAdmin {
