@@ -14,7 +14,7 @@ func main() {
 	dg, err := discordgo.New("Bot " + "NTI4NDYwNDc4ODgwNjc3OTAz.XpJmiA.pIXI-9kFLN0KUIfEB-IiPIeoP3Q")
 
 	dg.AddHandler(discordMessageCreate)
-	dg.AddHandler(discordGuildMemberAdd)
+	dg.AddHandler(DiscordGuildMemberAdd)
 
 	err = dg.Open()
 	if err != nil {
@@ -22,6 +22,7 @@ func main() {
 		return
 	}
 	InitCommands()
+	InitEvents()
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 
@@ -32,12 +33,7 @@ func main() {
 	// Cleanly close down the Discord session.
 	dg.Close()
 }
-func discordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
-	response := NewGenericEmbed("New Member", event.Member.Mention()+" had joined the server")
-	if response != nil {
-		session.ChannelMessageSendEmbed("364949781279145986", response)
-	}
-}
+
 func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
 
 	message, err := session.ChannelMessage(event.ChannelID, event.ID)

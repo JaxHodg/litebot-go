@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/bwmarrin/discordgo"
@@ -14,7 +13,6 @@ func cmdKick(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 
 	re := regexp.MustCompile(`<@!(\d*)>`)
 	userID := re.FindStringSubmatch(args[0])[1]
-	fmt.Println(userID)
 
 	if userID == "" {
 		return NewErrorEmbed("You must specify a user")

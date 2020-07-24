@@ -48,6 +48,11 @@ func InitCommands() {
 		Description:         "Disables the specified command",
 		RequiredPermissions: discordgo.PermissionAdministrator,
 		GuildOnly:           true}
+	Commands["set"] = &Command{
+		Function:            cmdSet,
+		Description:         "Sets the specified value",
+		RequiredPermissions: discordgo.PermissionAdministrator,
+		GuildOnly:           true}
 	Commands["kick"] = &Command{
 		Function:            cmdKick,
 		Description:         "Kicks the mentioned user",
