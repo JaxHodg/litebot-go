@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/signal"
 	"strings"
@@ -11,7 +12,14 @@ import (
 )
 
 func main() {
-	dg, err := discordgo.New("Bot " + "NTI4NDYwNDc4ODgwNjc3OTAz.XpJmiA.pIXI-9kFLN0KUIfEB-IiPIeoP3Q")
+	file, err := os.Open("./key.config")
+	if err != nil {
+		os.Create("./key.config")
+		fmt.Println("Place the key in key.config")
+		os.Exit(0)
+	}
+	key, _ := ioutil.ReadAll(file)
+	dg, err := discordgo.New("Bot " + string(key))
 
 	dg.AddHandler(discordMessageCreate)
 	dg.AddHandler(DiscordGuildMemberAdd)
