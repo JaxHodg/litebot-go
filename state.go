@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"os"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -8,18 +12,31 @@ var GuildEnabled = make(map[string]map[string]bool)
 var GuildData = make(map[string]map[string]string)
 var DataValues = []string{"joinmessage", "joinchannel", "leavemessage", "leavechannel"}
 
-//InitAllState creates save data for all guilds, won't be in final version of bot
-func InitAllState(s *discordgo.Session) {
-	for _, guild := range s.State.Guilds {
-		if _, ok := GuildEnabled[guild.ID]; ok {
-			GuildEnabled[guild.ID] = make(map[string]bool)
-			for cmdName, cmd := range Commands {
-				if cmd.CanDisable {
-					GuildEnabled[guild.ID][cmdName] = true
-				}
-			}
-		}
+func InitState() {
+	file, err := os.Open("./GuildEnabled.json")
+	if err != nil {
+		os.Create("./GuildEnabled.json")
 	}
+	byteValue, _ := ioutil.ReadAll(file)
+	json.Unmarshal(byteValue, &GuildEnabled)
+	file, err = os.Open("./GuildData.json")
+	if err != nil {
+		os.Create("./GuildEnabled.json")
+	}
+	byteValue, _ = ioutil.ReadAll(file)
+	json.Unmarshal(byteValue, &GuildData)
+}
+
+func DumpEnabled() {
+	jsonData, _ := json.Marshal(GuildEnabled)
+	jsonFile, _ := os.Create("./GuildEnabled.json")
+	jsonFile.Write(jsonData)
+}
+
+func DumpData() {
+	jsonData, _ := json.Marshal(GuildData)
+	jsonFile, _ := os.Create("./GuildData.json")
+	jsonFile.Write(jsonData)
 }
 
 //VerifyState creates state if missing for selected Guild
@@ -60,11 +77,13 @@ func CheckEnabled(guild *discordgo.Guild, command string) bool {
 func EnableCommand(guild *discordgo.Guild, command string) {
 	VerifyState(guild)
 	GuildEnabled[guild.ID][command] = true
+	DumpEnabled()
 }
 
 func DisableCommand(guild *discordgo.Guild, command string) { //Add more error detection
 	VerifyState(guild)
 	GuildEnabled[guild.ID][command] = false
+	DumpEnabled()
 }
 
 func CheckData(guild *discordgo.Guild, data string) string {
@@ -75,4 +94,5 @@ func CheckData(guild *discordgo.Guild, data string) string {
 func SetData(guild *discordgo.Guild, data string, value string) {
 	VerifyState(guild)
 	GuildData[guild.ID][data] = value
+	DumpData()
 }

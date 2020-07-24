@@ -22,6 +22,7 @@ func main() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
+	InitState()
 	InitCommands()
 	InitEvents()
 
