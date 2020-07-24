@@ -60,6 +60,12 @@ func InitCommands() {
 		RequiredPermissions: discordgo.PermissionBanMembers,
 		GuildOnly:           true,
 		CanDisable:          true}
+	Commands["purge"] = &Command{
+		Function:            cmdPurge,
+		Description:         "Deletes the specified number of messages",
+		RequiredPermissions: discordgo.PermissionManageMessages,
+		GuildOnly:           true,
+		CanDisable:          true}
 }
 
 // CallCommand calls the command and returns the embed it generates
