@@ -38,6 +38,16 @@ func InitCommands() {
 
 	Commands["help"] = &Command{Function: cmdHelp, Description: "Displays this message"}
 	Commands["ping"] = &Command{Function: cmdPing, Description: "Displays the ping"}
+	Commands["enable"] = &Command{
+		Function:            cmdEnable,
+		Description:         "Enables the specified command",
+		RequiredPermissions: discordgo.PermissionAdministrator,
+		GuildOnly:           true}
+	Commands["disable"] = &Command{
+		Function:            cmdDisable,
+		Description:         "Disables the specified command",
+		RequiredPermissions: discordgo.PermissionAdministrator,
+		GuildOnly:           true}
 	Commands["kick"] = &Command{
 		Function:            cmdKick,
 		Description:         "Kicks the mentioned user",
@@ -58,6 +68,9 @@ func CallCommand(commandName string, args []string, env *CommandEnvironment) *di
 		if command.GuildOnly && env.Dm {
 			return NewErrorEmbed("This command is for servers only")
 		}
+		if command.CanDisable && !CheckEnabled(env.Guild, commandName) {
+			return NewErrorEmbed(commandName + " is disabled")
+		}
 		if command.RequiredPermissions != 0 {
 			if permissionsAllowed, isAdmin, _ := MemberHasPermission(env, command.RequiredPermissions); !permissionsAllowed && !isAdmin {
 				return NewErrorEmbed("You do not have the required permissions to use " + commandName)
@@ -66,4 +79,9 @@ func CallCommand(commandName string, args []string, env *CommandEnvironment) *di
 		return command.Function(args, env)
 	}
 	return nil
+}
+
+func isValidCmd(command string) bool {
+	_, exists := Commands[command]
+	return exists
 }

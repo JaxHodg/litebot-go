@@ -21,7 +21,6 @@ func main() {
 		return
 	}
 	InitCommands()
-	InitState(dg)
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 
@@ -61,6 +60,7 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 
 	var guild *discordgo.Guild = nil
 	var member *discordgo.Member = nil
+
 	if !Dm {
 		guild, err = session.State.Guild(channel.GuildID)
 		if err != nil {

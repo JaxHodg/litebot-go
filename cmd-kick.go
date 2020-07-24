@@ -7,6 +7,10 @@ import (
 )
 
 func cmdKick(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
+	if len(args) == 0 {
+		return NewErrorEmbed("You must specify a user")
+	}
+
 	re := regexp.MustCompile(`[<][@][!](\d*)[>]`)
 	user := re.FindString(args[0])
 
