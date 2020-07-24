@@ -11,18 +11,22 @@ func cmdBan(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 		return NewErrorEmbed("You must specify a user")
 	}
 
-	re := regexp.MustCompile(`[<][@][!](\d*)[>]`)
-	user := re.FindString(args[0])
+	re := regexp.MustCompile(`<@!(\d*)>`)
+	userID := re.FindStringSubmatch(args[0])[1]
 
-	if user == "" {
+	if userID == "" {
 		return NewErrorEmbed("You must specify a user")
 	}
 
-	err := env.session.GuildBanCreate(env.Guild.ID, user, 0)
+	user, err := env.session.GuildMember(env.Guild.ID, userID)
+	if err != nil {
+		return NewErrorEmbed("Invalid user")
+	}
 
+	err = env.session.GuildBanCreate(env.Guild.ID, userID, 0)
 	if err != nil {
 		return NewErrorEmbed("Unable to ban user")
 	}
 
-	return NewGenericEmbed("Ban", "Banned "+user)
+	return NewGenericEmbed("Ban", "Banned  "+user.Mention())
 }
