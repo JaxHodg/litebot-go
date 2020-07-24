@@ -2,8 +2,7 @@
 Litebot rewrite in Golang using DiscordGo
 
 ## TODO:
-- Store settings per guild (Enabled/custom messages)
-- Purge command
-- Event messages (join/leave + DMs)
+- More user friendly
 - Message filtering (Custom word list)
-- Handle DMs
+- Fix DMs
+- Clean up Events

@@ -54,6 +54,7 @@ func NewErrorEmbed(embedMsg string) *discordgo.MessageEmbed {
 	return errorEmbed
 }
 
+// Contains checks if an array contains a string
 func Contains(arr []string, str string) bool {
 	for _, a := range arr {
 		if a == str {

@@ -7,13 +7,16 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+// Events contains all events
 var Events map[string]*Event
 
+// Event stores data about the event
 type Event struct {
 	Description string
 	CanDisable  bool
 }
 
+// InitEvents adds the events to the map
 func InitEvents() {
 	Events = make(map[string]*Event)
 
@@ -21,6 +24,7 @@ func InitEvents() {
 	Events["LeaveMessage"] = &Event{Description: "", CanDisable: true}
 }
 
+// DiscordGuildMemberAdd handles a user joining the server
 func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
 	guild, err := session.Guild(event.GuildID)
 	if err != nil {
@@ -52,6 +56,7 @@ func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMem
 	}
 }
 
+// DiscordGuildMemberRemove handles a user leaving the server
 func DiscordGuildMemberRemove(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
 	guild, err := session.Guild(event.GuildID)
 	if err != nil {
