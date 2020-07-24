@@ -21,6 +21,7 @@ func main() {
 		return
 	}
 	InitCommands()
+	InitState(dg)
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 

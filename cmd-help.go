@@ -24,8 +24,8 @@ func cmdHelp(args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 		helpEmbed.Fields = []*discordgo.MessageEmbedField{
 			&discordgo.MessageEmbedField{
 				Name:  "Description",
-				Value: command.Description}}
-
+				Value: command.Description},
+		}
 	} else {
 		helpEmbed.Title = "Help"
 

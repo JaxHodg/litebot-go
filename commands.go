@@ -28,6 +28,8 @@ type Command struct {
 
 	GuildOnly           bool
 	RequiredPermissions int
+
+	CanDisable bool
 }
 
 // InitCommands creates all the commands and adds the to the slice
@@ -40,12 +42,14 @@ func InitCommands() {
 		Function:            cmdKick,
 		Description:         "Kicks the mentioned user",
 		RequiredPermissions: discordgo.PermissionKickMembers,
-		GuildOnly:           true}
+		GuildOnly:           true,
+		CanDisable:          true}
 	Commands["ban"] = &Command{
 		Function:            cmdBan,
 		Description:         "Bans the mentioned user",
 		RequiredPermissions: discordgo.PermissionBanMembers,
-		GuildOnly:           true}
+		GuildOnly:           true,
+		CanDisable:          true}
 }
 
 // CallCommand calls the command and returns the embed it generates
