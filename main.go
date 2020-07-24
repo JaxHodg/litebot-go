@@ -15,6 +15,7 @@ func main() {
 
 	dg.AddHandler(discordMessageCreate)
 	dg.AddHandler(DiscordGuildMemberAdd)
+	dg.AddHandler(DiscordGuildMemberRemove)
 
 	err = dg.Open()
 	if err != nil {
