@@ -9,6 +9,11 @@ Litebot rewrite in Golang using DiscordGo
 
 ## Documentation
 
+### Features
+- Join/Leave messages 
+- Kick/ban users
+- Purge messages
+
 ### Join Message
 - Sends a message when a user joins the Server
 - Can be enabled/disabled with `!enable joinmessage` and `!disable joinmessage`
