@@ -53,4 +53,5 @@ Litebot rewrite in Golang using DiscordGo
 
 ### Block/Unblock
 - Used to block a specified term
+- Admins are exempt from message filtering
 - `!block discord.gg`
