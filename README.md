@@ -2,10 +2,16 @@
 Litebot rewrite in Golang using DiscordGo
 
 ## TODO:
-- Save data using structs
-- Message filtering (Custom word list)
+- More user friendly
+    - Give users more information with !help
+- More universal code
+    - Merge commands, events and other features into modules
+    - Modules can be enabled/disabled
+    - All modules will show up in help
 - Fix DMs
-- Clean up Events
+    - Won't respond to DMs because it can't determine what Guild the message is from
+    - Getting rid of CommandEnviroment and having each command figure it out on its own
+
 
 ## Documentation
 
@@ -13,6 +19,7 @@ Litebot rewrite in Golang using DiscordGo
 - Join/Leave messages 
 - Kick/ban users
 - Purge messages
+- Block custom word list
 
 ### Join Message
 - Sends a message when a user joins the Server
@@ -43,3 +50,7 @@ Litebot rewrite in Golang using DiscordGo
 ### Set
 - Used to set a custom value
 - `!set prefix !`
+
+### Block/Unblock
+- Used to block a specified term
+- `!block discord.gg`
