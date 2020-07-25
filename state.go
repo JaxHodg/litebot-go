@@ -15,7 +15,7 @@ var GuildEnabled = make(map[string]map[string]bool)
 var GuildData = make(map[string]map[string]string)
 
 // DataValues contains the data that is stored in GuildData
-var DataValues = []string{"joinmessage", "joinchannel", "leavemessage", "leavechannel"}
+var DataValues = []string{"prefix", "joinmessage", "joinchannel", "leavemessage", "leavechannel"}
 
 // InitState loads GuildEnabled & GuildData from files if they exist, creates them if they don't
 func InitState() {
@@ -27,7 +27,7 @@ func InitState() {
 	json.Unmarshal(byteValue, &GuildEnabled)
 	file, err = os.Open("./GuildData.json")
 	if err != nil {
-		os.Create("./GuildEnabled.json")
+		os.Create("./GuildData.json")
 	}
 	byteValue, _ = ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &GuildData)

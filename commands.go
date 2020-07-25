@@ -9,8 +9,6 @@ var Commands map[string]*Command
 
 // CommandEnvironment is a struct that contains all the info a command needs to run
 type CommandEnvironment struct {
-	Dm bool
-
 	session *discordgo.Session
 	event   *discordgo.MessageCreate
 
@@ -76,9 +74,6 @@ func InitCommands() {
 // CallCommand calls the command and returns the embed it generates
 func CallCommand(commandName string, args []string, env *CommandEnvironment) *discordgo.MessageEmbed {
 	if command, exists := Commands[commandName]; exists {
-		if command.GuildOnly && env.Dm {
-			return NewErrorEmbed("This command is for servers only")
-		}
 		if command.CanDisable && !CheckEnabled(env.Guild, commandName) {
 			return NewErrorEmbed(commandName + " is disabled")
 		}

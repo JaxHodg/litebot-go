@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"regexp"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -34,7 +35,9 @@ func main() {
 	InitCommands()
 	InitEvents()
 
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	UpdateStatus(dg)
+
+	fmt.Println("Lite-bot is now running.  Press CTRL-C to exit.")
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
@@ -45,7 +48,6 @@ func main() {
 }
 
 func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
-
 	message, err := session.ChannelMessage(event.ChannelID, event.ID)
 	if err != nil {
 		return //Error finding message
@@ -63,32 +65,34 @@ func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 		return //Error finding the channel
 	}
 
+	guild, err := session.State.Guild(channel.GuildID)
+	if err != nil {
+		return
+	}
+	member, err := session.GuildMember(guild.ID, message.Author.ID)
+	if err != nil {
+		return //Error finding the guild member
+	}	
+
 	content := message.Content
 	if content == "" {
 		return //The message was empty
+	} else if content == "<@!405829095054770187>" {
+		session.ChannelMessageSendEmbed(channel.ID,NewGenericEmbed("Litebot","Hi, I'm litebot. My prefix is `"+CheckData(guild,"prefix")+"`"))
 	}
 
-	Dm := CheckIfDm(session, event)
-
-	var guild *discordgo.Guild = nil
-	var member *discordgo.Member = nil
-
-	if !Dm {
-		guild, err = session.State.Guild(channel.GuildID)
-		if err != nil {
-			return
-		}
-		member, err = session.GuildMember(guild.ID, message.Author.ID)
-		if err != nil {
-			return //Error finding the guild member
-		}
+	prefix := CheckData(guild, "prefix")
+	if prefix == ""{
+		prefix = "!"
 	}
 
-	if content[0] == '!' {
-		cmdMsg := strings.TrimPrefix(content, "!")
+	re := regexp.MustCompile("["+prefix+"](\\w*)")
+
+	if re.MatchString(content) {
+		cmdMsg := strings.TrimPrefix(content, prefix)
 		cmd := strings.Split(cmdMsg, " ")
 
-		commandEnvironment := &CommandEnvironment{Dm, session, event, channel, guild, message, member.User, member}
+		commandEnvironment := &CommandEnvironment{session, event, channel, guild, message, member.User, member}
 
 		response := CallCommand(cmd[0], cmd[1:], commandEnvironment)
 

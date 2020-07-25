@@ -26,6 +26,8 @@ func InitEvents() {
 
 // DiscordGuildMemberAdd handles a user joining the server
 func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
+	UpdateStatus(session)
+	
 	guild, err := session.Guild(event.GuildID)
 	if err != nil {
 		return
@@ -58,6 +60,8 @@ func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMem
 
 // DiscordGuildMemberRemove handles a user leaving the server
 func DiscordGuildMemberRemove(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
+	UpdateStatus(session)
+
 	guild, err := session.Guild(event.GuildID)
 	if err != nil {
 		return

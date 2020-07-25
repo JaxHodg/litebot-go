@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -62,4 +64,8 @@ func Contains(arr []string, str string) bool {
 		}
 	}
 	return false
+}
+
+func UpdateStatus(session *discordgo.Session){
+	session.UpdateStatus(0,"@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
 }
