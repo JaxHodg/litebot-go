@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -66,6 +67,21 @@ func Contains(arr []string, str string) bool {
 	return false
 }
 
-func UpdateStatus(session *discordgo.Session){
-	session.UpdateStatus(0,"@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
+func Find(s []string, e string) int {
+	fmt.Println(s, e)
+	for i := 0; i < len(s); i++ {
+		if s[i] == e {
+			return i
+		}
+	}
+	return -1
+}
+
+func Remove(s []string, i int) []string {
+	s[len(s)-1], s[i] = s[i], s[len(s)-1]
+	return s[:len(s)-1]
+}
+
+func UpdateStatus(session *discordgo.Session) {
+	session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
 }

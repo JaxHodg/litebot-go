@@ -46,6 +46,16 @@ func InitCommands() {
 		Description:         "Disables the specified command",
 		RequiredPermissions: discordgo.PermissionAdministrator,
 		GuildOnly:           true}
+	Commands["block"] = &Command{
+		Function:            cmdBlock,
+		Description:         "Blocks the specified term",
+		RequiredPermissions: discordgo.PermissionAdministrator,
+		GuildOnly:           true}
+	Commands["unblock"] = &Command{
+		Function:            cmdUnblock,
+		Description:         "Unlocks the specified term",
+		RequiredPermissions: discordgo.PermissionAdministrator,
+		GuildOnly:           true}
 	Commands["set"] = &Command{
 		Function:            cmdSet,
 		Description:         "Sets the specified value",

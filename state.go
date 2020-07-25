@@ -14,23 +14,38 @@ var GuildEnabled = make(map[string]map[string]bool)
 // GuildData stores strings for each guilds
 var GuildData = make(map[string]map[string]string)
 
+// GuildLists stores []strings for each guilds
+var GuildLists = make(map[string]map[string][]string)
+
 // DataValues contains the data that is stored in GuildData
 var DataValues = []string{"prefix", "joinmessage", "joinchannel", "leavemessage", "leavechannel"}
 
+// ListValues contains the lists that are stored in GuildLists
+var ListValues = []string{"blocked"}
+
 // InitState loads GuildEnabled & GuildData from files if they exist, creates them if they don't
 func InitState() {
+	// Loads GuildEnabled
 	file, err := os.Open("./GuildEnabled.json")
 	if err != nil {
 		os.Create("./GuildEnabled.json")
 	}
 	byteValue, _ := ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &GuildEnabled)
+	// Loads GuildData
 	file, err = os.Open("./GuildData.json")
 	if err != nil {
 		os.Create("./GuildData.json")
 	}
 	byteValue, _ = ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &GuildData)
+	// Loads GuildLists
+	file, err = os.Open("./GuildLists.json")
+	if err != nil {
+		os.Create("./GuildLists.json")
+	}
+	byteValue, _ = ioutil.ReadAll(file)
+	json.Unmarshal(byteValue, &GuildLists)
 }
 
 // DumpEnabled dumps the data for which commands are enabled to json
@@ -44,6 +59,13 @@ func DumpEnabled() {
 func DumpData() {
 	jsonData, _ := json.Marshal(GuildData)
 	jsonFile, _ := os.Create("./GuildData.json")
+	jsonFile.Write(jsonData)
+}
+
+// DumpLists dumps the []strings to json
+func DumpLists() {
+	jsonData, _ := json.Marshal(GuildLists)
+	jsonFile, _ := os.Create("./GuildLists.json")
 	jsonFile.Write(jsonData)
 }
 
@@ -73,6 +95,16 @@ func VerifyState(guild *discordgo.Guild) {
 	for _, val := range DataValues {
 		if _, ok := GuildData[guild.ID][val]; !ok {
 			GuildData[guild.ID][val] = ""
+		}
+	}
+	// Verifys guild has a section under GuildLists
+	if _, ok := GuildLists[guild.ID]; !ok {
+		GuildLists[guild.ID] = make(map[string][]string)
+	}
+	// Verifys every data value is listed
+	for _, val := range ListValues {
+		if _, ok := GuildLists[guild.ID][val]; !ok {
+			GuildLists[guild.ID][val] = []string{}
 		}
 	}
 }
@@ -117,4 +149,21 @@ func SetData(guild *discordgo.Guild, data string, value string) {
 	VerifyState(guild)
 	GuildData[guild.ID][data] = value
 	DumpData()
+}
+
+func AddToList(guild *discordgo.Guild, data string, value string) {
+	VerifyState(guild)
+	GuildLists[guild.ID][data] = append(GuildLists[guild.ID][data], value)
+	DumpLists()
+}
+
+func RemoveFromList(guild *discordgo.Guild, data string, index int) {
+	VerifyState(guild)
+	GuildLists[guild.ID][data] = Remove(GuildLists[guild.ID][data], index)
+	DumpLists()
+}
+
+func CheckList(guild *discordgo.Guild, data string) []string {
+	VerifyState(guild)
+	return GuildLists[guild.ID][data]
 }
