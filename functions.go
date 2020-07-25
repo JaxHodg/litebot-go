@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -68,7 +67,7 @@ func Contains(arr []string, str string) bool {
 }
 
 func Find(s []string, e string) int {
-	fmt.Println(s, e)
+
 	for i := 0; i < len(s); i++ {
 		if s[i] == e {
 			return i
