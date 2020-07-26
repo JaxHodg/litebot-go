@@ -1,4 +1,4 @@
-package main
+package functions
 
 import (
 	"strconv"
@@ -7,11 +7,11 @@ import (
 )
 
 // MemberHasPermission returns whether a member has the requested permission and whether they have admin
-func MemberHasPermission(env *CommandEnvironment, permission int) (bool, bool, error) { // Perm, Admin, Error
+func MemberHasPermission(session *discordgo.Session, event *discordgo.MessageCreate, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
-	for _, roleID := range env.Member.Roles {
-		role, err := env.session.State.Role(env.Guild.ID, roleID)
+	for _, roleID := range event.Message.Member.Roles {
+		role, err := session.State.Role(event.Message.GuildID, roleID)
 		if err != nil {
 			return false, false, err
 		}

@@ -1,93 +1,34 @@
 package main
 
 import (
-	"regexp"
-	"strings"
-
 	"github.com/bwmarrin/discordgo"
+
+	"./functions"
+	"./modules"
+	"./state"
 )
 
-// Events contains all events
-var Events map[string]*Event
+func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
+	content := event.Message.Content
 
-// Event stores data about the event
-type Event struct {
-	Description string
-	CanDisable  bool
-}
+	if content == "" {
+		return //The message was empty
+	} else if content == "<@!405829095054770187>" {
+		session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
+	}
+	modules.BlockMessage(session, event)
 
-// InitEvents adds the events to the map
-func InitEvents() {
-	Events = make(map[string]*Event)
-
-	Events["JoinMessage"] = &Event{Description: "", CanDisable: true}
-	Events["LeaveMessage"] = &Event{Description: "", CanDisable: true}
+	CallCommand(session, event)
 }
 
 // DiscordGuildMemberAdd handles a user joining the server
 func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
-	UpdateStatus(session)
-	
-	guild, err := session.Guild(event.GuildID)
-	if err != nil {
-		return
-	}
-
-	if !CheckEnabled(guild, "JoinMessage") {
-		return
-	}
-
-	re := regexp.MustCompile(`<#(\d*)>`)
-	channelID := re.FindStringSubmatch(CheckData(guild, "joinchannel"))[1]
-	_, err = session.Channel(channelID)
-	if err != nil {
-		return
-	}
-
-	message := CheckData(guild, "joinmessage")
-	if message == "" {
-		return
-	}
-
-	message = strings.ReplaceAll(message, "{user}", event.Mention())
-
-	response := NewGenericEmbed("New Member", message)
-
-	if response != nil {
-		session.ChannelMessageSendEmbed(channelID, response)
-	}
+	functions.UpdateStatus(session)
+	modules.JoinMessage(session, event)
 }
 
 // DiscordGuildMemberRemove handles a user leaving the server
 func DiscordGuildMemberRemove(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
-	UpdateStatus(session)
-
-	guild, err := session.Guild(event.GuildID)
-	if err != nil {
-		return
-	}
-
-	if !CheckEnabled(guild, "LeaveMessage") {
-		return
-	}
-
-	re := regexp.MustCompile(`<#(\d*)>`)
-	channelID := re.FindStringSubmatch(CheckData(guild, "leavechannel"))[1]
-	_, err = session.Channel(channelID)
-	if err != nil {
-		return
-	}
-
-	message := CheckData(guild, "leavemessage")
-	if message == "" {
-		return
-	}
-
-	message = strings.ReplaceAll(message, "{user}", event.Mention())
-
-	response := NewGenericEmbed("Member left", message)
-
-	if response != nil {
-		session.ChannelMessageSendEmbed(channelID, response)
-	}
+	functions.UpdateStatus(session)
+	modules.LeaveMessage(session, event)
 }
