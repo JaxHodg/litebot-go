@@ -9,6 +9,7 @@ import (
 )
 
 func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
+	functions.UpdateStatus(session)
 	content := event.Message.Content
 
 	if content == "" {
