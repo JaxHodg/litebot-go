@@ -13,7 +13,7 @@ func init() {
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:                "Purge",
-			Function:            cmdSet,
+			Function:            cmdPurge,
 			Description:         "Purges the specified number of messages",
 			RequiredPermissions: discordgo.PermissionManageMessages,
 			GuildOnly:           true,
