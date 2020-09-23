@@ -2,6 +2,8 @@
 Litebot rewrite in Golang using DiscordGo
 
 ## TODO:
+- Queue system
+    - Useful for games like Among us or Animal Crossing
 - More user friendly
     - Give users more information with !help
 - More universal code
