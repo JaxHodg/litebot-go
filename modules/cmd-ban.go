@@ -33,11 +33,13 @@ func cmdBan(args []string, session *discordgo.Session, event *discordgo.MessageC
 	}
 
 	re := regexp.MustCompile(`[<][@](\d*)[>]`)
-	userID := re.FindStringSubmatch(args[0])[1]
+	substring := re.FindStringSubmatch(args[0])
 
-	if userID == "" {
+	if len(substring) == 0 {
 		return functions.NewErrorEmbed("You must specify a user")
 	}
+
+	userID := substring[1]
 
 	user, err := session.GuildMember(event.Message.GuildID, userID)
 	if err != nil {
