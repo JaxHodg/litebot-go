@@ -1,23 +1,20 @@
-# litebot-go
-Litebot rewrite in Golang using DiscordGo
+# litebot
+Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, and purge, and blocking words. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are on the way.
 
 ## TODO:
-- Queue system
-    - Useful for games like Among us or Animal Crossing
 - More user friendly
     - Give users more information with !help
-- More universal code
-    - Merge commands, events and other features into modules
-    - Modules can be enabled/disabled
-    - All modules will show up in help
+    - Allow admins to see what terms they have banned (Maybe a !check command)
+- Queue system
+    - Useful for games like Among us or Animal Crossing
 - Fix DMs
     - Won't respond to DMs because it can't determine what Guild the message is from
     - Getting rid of CommandEnviroment and having each command figure it out on its own
 
-
 ## Documentation
 
 ### Features
+- Custom prefix
 - Join/Leave messages 
 - Kick/ban users
 - Purge messages
