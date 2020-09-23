@@ -10,11 +10,11 @@ import (
 
 func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
 	functions.UpdateStatus(session)
-	content := event.Message.Content
+	if !functions.VerifyEvent(session, event) {
+		return //Error with message details
+	}
 
-	if content == "" {
-		return //The message was empty
-	} else if content == "<@!405829095054770187>" {
+	if event.Message.Content == "<@!405829095054770187>" {
 		session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
 	}
 	modules.BlockMessage(session, event)

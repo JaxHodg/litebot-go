@@ -10,9 +10,6 @@ import (
 func MemberHasPermission(session *discordgo.Session, event *discordgo.MessageCreate, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
-	if event.Message.Member == nil{
-		return false,false,nil
-	}
 	for _, roleID := range event.Message.Member.Roles {
 		role, err := session.State.Role(event.Message.GuildID, roleID)
 		if err != nil {
@@ -86,4 +83,34 @@ func Remove(s []string, i int) []string {
 
 func UpdateStatus(session *discordgo.Session) {
 	session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
+}
+
+func VerifyEvent(session *discordgo.Session, event *discordgo.MessageCreate) bool {
+	message, err := session.ChannelMessage(event.ChannelID, event.ID)
+	if err != nil {
+		return false
+	}
+	if message.Author.ID == session.State.User.ID {
+		return false
+	}
+	if message.Author.Bot {
+		return false
+	}
+	channel, err := session.State.Channel(message.ChannelID)
+	if err != nil {
+		return false
+	}
+	guild, err := session.State.Guild(channel.GuildID)
+	if err != nil {
+		return false
+	}
+	content := message.Content
+	if content == "" {
+		return false
+	}
+	_, err = session.GuildMember(guild.ID, message.Author.ID)
+	if err != nil {
+		return false
+	}
+	return true
 }
