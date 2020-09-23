@@ -3,6 +3,8 @@ package modules
 import (
 	"strings"
 
+	"fmt"
+
 	"../functions"
 	"../manager"
 	"../state"
@@ -20,10 +22,16 @@ func init() {
 }
 
 func BlockMessage(session *discordgo.Session, event *discordgo.MessageCreate) {
-	_, isAdmin, _ := functions.MemberHasPermission(session, event, discordgo.PermissionAdministrator)
-
+	_, isAdmin, err := functions.MemberHasPermission(session, event, discordgo.PermissionAdministrator)
+	if err != nil {
+		fmt.Println("Permission errored out")
+		return
+	}
+	if isAdmin == true{
+		return
+	}
 	for _, s := range state.CheckList(event.GuildID, "blocked") {
-		if strings.Contains(strings.ToLower(event.Message.Content), s) && !isAdmin {
+		if strings.Contains(strings.ToLower(event.Message.Content), s){
 			session.ChannelMessageDelete(event.Message.ChannelID, event.Message.ID)
 			pm, err := session.UserChannelCreate(event.Message.Author.ID)
 			if err != nil {

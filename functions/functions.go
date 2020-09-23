@@ -2,7 +2,7 @@ package functions
 
 import (
 	"strconv"
-
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -10,6 +10,9 @@ import (
 func MemberHasPermission(session *discordgo.Session, event *discordgo.MessageCreate, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
+	if event.Message.Member == nil{
+		return false,false,nil
+	}
 	for _, roleID := range event.Message.Member.Roles {
 		role, err := session.State.Role(event.Message.GuildID, roleID)
 		if err != nil {
