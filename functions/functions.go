@@ -2,7 +2,7 @@ package functions
 
 import (
 	"strconv"
-	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 )
 
