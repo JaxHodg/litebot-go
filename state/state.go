@@ -1,11 +1,12 @@
-package main
+package state
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
 
-	"github.com/bwmarrin/discordgo"
+	"../functions"
+	"../manager"
 )
 
 // GuildEnabled store data about which commands/events are enabled
@@ -70,100 +71,97 @@ func DumpLists() {
 }
 
 //VerifyState creates state if missing for selected Guild
-func VerifyState(guild *discordgo.Guild) {
+func VerifyState(guildID string) {
 	// Verifys guild has a section under GuildEnabled
-	if _, ok := GuildEnabled[guild.ID]; !ok {
-		GuildEnabled[guild.ID] = make(map[string]bool)
+	if _, ok := GuildEnabled[guildID]; !ok {
+		GuildEnabled[guildID] = make(map[string]bool)
 	}
-	// Verifys each command that can be disabled is listed
-	for cmdName, cmd := range Commands {
-		if _, ok := GuildEnabled[guild.ID][cmdName]; !ok && cmd.CanDisable {
-			GuildEnabled[guild.ID][cmdName] = true
-		}
-	}
-	// Verifys each event that can be disabled is listed
-	for eventName, event := range Events {
-		if _, ok := GuildEnabled[guild.ID][eventName]; !ok && event.CanDisable {
-			GuildEnabled[guild.ID][eventName] = true
+	// Verifys each module that can be disabled is listed
+	for modName := range manager.Modules {
+		if _, ok := GuildEnabled[guildID][modName]; !ok {
+			GuildEnabled[guildID][modName] = true
 		}
 	}
 	// Verifys guild has a section under GuildData
-	if _, ok := GuildData[guild.ID]; !ok {
-		GuildData[guild.ID] = make(map[string]string)
+	if _, ok := GuildData[guildID]; !ok {
+		GuildData[guildID] = make(map[string]string)
 	}
 	// Verifys every data value is listed
 	for _, val := range DataValues {
-		if _, ok := GuildData[guild.ID][val]; !ok {
-			GuildData[guild.ID][val] = ""
+		if _, ok := GuildData[guildID][val]; !ok {
+			GuildData[guildID][val] = ""
 		}
 	}
 	// Verifys guild has a section under GuildLists
-	if _, ok := GuildLists[guild.ID]; !ok {
-		GuildLists[guild.ID] = make(map[string][]string)
+	if _, ok := GuildLists[guildID]; !ok {
+		GuildLists[guildID] = make(map[string][]string)
 	}
 	// Verifys every data value is listed
 	for _, val := range ListValues {
-		if _, ok := GuildLists[guild.ID][val]; !ok {
-			GuildLists[guild.ID][val] = []string{}
+		if _, ok := GuildLists[guildID][val]; !ok {
+			GuildLists[guildID][val] = []string{}
 		}
 	}
 }
 
 // CheckEnabled checks if a command is enabled
-func CheckEnabled(guild *discordgo.Guild, command string) bool {
-	VerifyState(guild)
-	if !Commands[command].CanDisable {
-		return true
+func CheckEnabled(guildID string, command string) bool {
+	VerifyState(guildID)
+	if _, ok := manager.Modules[command]; ok {
+		return GuildEnabled[guildID][command]
 	}
-	return GuildEnabled[guild.ID][command]
+	return true
 }
 
-// EnableCommand sets commmand to enabled
-func EnableCommand(guild *discordgo.Guild, command string) {
-	VerifyState(guild)
-	if !Commands[command].CanDisable {
+// EnableModule sets commmand to enabled
+func EnableModule(guildID string, module string) {
+	VerifyState(guildID)
+	if !manager.IsValidModule(module) {
 		return
 	}
-	GuildEnabled[guild.ID][command] = true
+	GuildEnabled[guildID][module] = true
 	DumpEnabled()
 }
 
-// DisableCommand sets commmand to disabled
-func DisableCommand(guild *discordgo.Guild, command string) { //Add more error detection
-	VerifyState(guild)
-	if !Commands[command].CanDisable {
+// DisableModule sets commmand to disabled
+func DisableModule(guildID string, Module string) { //Add more error detection
+	VerifyState(guildID)
+	if !manager.IsValidModule(Module) {
 		return
 	}
-	GuildEnabled[guild.ID][command] = false
+	GuildEnabled[guildID][Module] = false
 	DumpEnabled()
 }
 
 // CheckData gets string data
-func CheckData(guild *discordgo.Guild, data string) string {
-	VerifyState(guild)
-	return GuildData[guild.ID][data]
+func CheckData(guildID string, data string) string {
+	VerifyState(guildID)
+	return GuildData[guildID][data]
 }
 
 // SetData sets string data
-func SetData(guild *discordgo.Guild, data string, value string) {
-	VerifyState(guild)
-	GuildData[guild.ID][data] = value
+func SetData(guildID string, data string, value string) {
+	VerifyState(guildID)
+	GuildData[guildID][data] = value
 	DumpData()
 }
 
-func AddToList(guild *discordgo.Guild, data string, value string) {
-	VerifyState(guild)
-	GuildLists[guild.ID][data] = append(GuildLists[guild.ID][data], value)
+// AddToList adds data to the specified list
+func AddToList(guildID string, data string, value string) {
+	VerifyState(guildID)
+	GuildLists[guildID][data] = append(GuildLists[guildID][data], value)
 	DumpLists()
 }
 
-func RemoveFromList(guild *discordgo.Guild, data string, index int) {
-	VerifyState(guild)
-	GuildLists[guild.ID][data] = Remove(GuildLists[guild.ID][data], index)
+// RemoveFromList removes data from the specified list
+func RemoveFromList(guildID string, data string, index int) {
+	VerifyState(guildID)
+	GuildLists[guildID][data] = functions.Remove(GuildLists[guildID][data], index)
 	DumpLists()
 }
 
-func CheckList(guild *discordgo.Guild, data string) []string {
-	VerifyState(guild)
-	return GuildLists[guild.ID][data]
+// CheckList gets the list
+func CheckList(guildID string, data string) []string {
+	VerifyState(guildID)
+	return GuildLists[guildID][data]
 }

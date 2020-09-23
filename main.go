@@ -5,9 +5,10 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"regexp"
-	"strings"
 	"syscall"
+
+	"./functions"
+	"./state"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -22,7 +23,7 @@ func main() {
 	key, _ := ioutil.ReadAll(file)
 	dg, err := discordgo.New("Bot " + string(key))
 
-	dg.AddHandler(discordMessageCreate)
+	dg.AddHandler(DiscordMessageCreate)
 	dg.AddHandler(DiscordGuildMemberAdd)
 	dg.AddHandler(DiscordGuildMemberRemove)
 
@@ -31,11 +32,8 @@ func main() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
-	InitState()
-	InitCommands()
-	InitEvents()
-
-	UpdateStatus(dg)
+	state.InitState()
+	functions.UpdateStatus(dg)
 
 	fmt.Println("Lite-bot is now running.  Press CTRL-C to exit.")
 
@@ -45,73 +43,4 @@ func main() {
 
 	// Cleanly close down the Discord session.
 	dg.Close()
-}
-
-func discordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
-	message, err := session.ChannelMessage(event.ChannelID, event.ID)
-	if err != nil {
-		return //Error finding message
-	}
-
-	if message.Author.ID == session.State.User.ID {
-		return //Don't respond to itself
-	}
-	if message.Author.Bot {
-		return //Don't respond to bots
-	}
-
-	channel, err := session.State.Channel(message.ChannelID)
-	if err != nil {
-		return //Error finding the channel
-	}
-
-	guild, err := session.State.Guild(channel.GuildID)
-	if err != nil {
-		return
-	}
-	member, err := session.GuildMember(guild.ID, message.Author.ID)
-	if err != nil {
-		return //Error finding the guild member
-	}
-	content := message.Content
-	if content == "" {
-		return //The message was empty
-	} else if content == "<@!405829095054770187>" {
-		session.ChannelMessageSendEmbed(channel.ID, NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+CheckData(guild, "prefix")+"`"))
-	}
-
-	commandEnvironment := &CommandEnvironment{session, event, channel, guild, message, member.User, member}
-
-	_, isAdmin, _ := MemberHasPermission(commandEnvironment, discordgo.PermissionAdministrator)
-
-	for _, s := range CheckList(guild, "blocked") {
-		if strings.Contains(strings.ToLower(content), s) && !isAdmin {
-			session.ChannelMessageDelete(channel.ID, message.ID)
-			pm, err := session.UserChannelCreate(message.Author.ID)
-			if err != nil {
-				return
-			}
-			session.ChannelMessageSendEmbed(pm.ID, NewGenericEmbed("Message Blocked", "Your message: ```"+content+"``` was blocked because it contained a blocked term"))
-			return
-		}
-	}
-
-	prefix := CheckData(guild, "prefix")
-	if prefix == "" {
-		prefix = "!"
-	}
-
-	re := regexp.MustCompile("[" + prefix + "](\\w*)")
-
-	if re.MatchString(content) {
-		cmdMsg := strings.TrimPrefix(content, prefix)
-		cmd := strings.Split(cmdMsg, " ")
-
-		response := CallCommand(cmd[0], cmd[1:], commandEnvironment)
-
-		if response != nil {
-			session.ChannelMessageSendEmbed(event.ChannelID, response)
-		}
-	}
-
 }
