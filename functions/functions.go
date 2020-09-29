@@ -7,11 +7,11 @@ import (
 )
 
 // MemberHasPermission returns whether a member has the requested permission and whether they have admin
-func MemberHasPermission(session *discordgo.Session, event *discordgo.MessageCreate, permission int) (bool, bool, error) { // Perm, Admin, Error
+func MemberHasPermission(session *discordgo.Session, message *discordgo.Message, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
-	for _, roleID := range event.Message.Member.Roles {
-		role, err := session.State.Role(event.Message.GuildID, roleID)
+	for _, roleID := range message.Member.Roles {
+		role, err := session.State.Role(message.GuildID, roleID)
 		if err != nil {
 			return false, false, err
 		}
@@ -85,8 +85,8 @@ func UpdateStatus(session *discordgo.Session) {
 	session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
 }
 
-func VerifyEvent(session *discordgo.Session, event *discordgo.MessageCreate) bool {
-	message, err := session.ChannelMessage(event.ChannelID, event.ID)
+func VerifyMessage(session *discordgo.Session, message *discordgo.Message) bool {
+	message, err := session.ChannelMessage(message.ChannelID, message.ID)
 	if err != nil {
 		return false
 	}

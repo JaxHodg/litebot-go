@@ -3,8 +3,6 @@ package modules
 import (
 	"strings"
 
-	"fmt"
-
 	"../functions"
 	"../manager"
 	"../state"
@@ -21,23 +19,22 @@ func init() {
 	)
 }
 
-func BlockMessage(session *discordgo.Session, event *discordgo.MessageCreate) {
-	_, isAdmin, err := functions.MemberHasPermission(session, event, discordgo.PermissionAdministrator)
+func BlockMessage(session *discordgo.Session, message *discordgo.Message) {
+	_, isAdmin, err := functions.MemberHasPermission(session, message, discordgo.PermissionAdministrator)
 	if err != nil {
-		fmt.Println("Permission errored out")
 		return
 	}
-	if isAdmin == true{
+	if isAdmin == true {
 		return
 	}
-	for _, s := range state.CheckList(event.GuildID, "blocked") {
-		if strings.Contains(strings.ToLower(event.Message.Content), s){
-			session.ChannelMessageDelete(event.Message.ChannelID, event.Message.ID)
-			pm, err := session.UserChannelCreate(event.Message.Author.ID)
+	for _, s := range state.CheckList(message.GuildID, "blocked") {
+		if strings.Contains(strings.ToLower(message.Content), s) {
+			session.ChannelMessageDelete(message.ChannelID, message.ID)
+			pm, err := session.UserChannelCreate(message.Author.ID)
 			if err != nil {
 				return
 			}
-			session.ChannelMessageSendEmbed(pm.ID, functions.NewGenericEmbed("Message Blocked", "Your message: ```"+event.Message.Content+"``` was blocked because it contained a blocked term"))
+			session.ChannelMessageSendEmbed(pm.ID, functions.NewGenericEmbed("Message Blocked", "Your message: ```"+message.Content+"``` was blocked because it contained a blocked term"))
 			return
 		}
 	}

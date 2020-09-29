@@ -24,6 +24,7 @@ func main() {
 	dg, err := discordgo.New("Bot " + string(key))
 
 	dg.AddHandler(DiscordMessageCreate)
+	dg.AddHandler(DiscordMessageUpdate)
 	dg.AddHandler(DiscordGuildMemberAdd)
 	dg.AddHandler(DiscordGuildMemberRemove)
 
