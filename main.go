@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -19,8 +21,16 @@ func main() {
 		fmt.Println("Place the key in key.config")
 		os.Exit(0)
 	}
-	key, _ := ioutil.ReadAll(file)
+	key, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	key = bytes.TrimSuffix(key, []byte{'\n'})
+
 	dg, err := discordgo.New("Bot " + string(key))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	dg.AddHandler(DiscordMessageCreate)
 	dg.AddHandler(DiscordMessageUpdate)
@@ -30,7 +40,7 @@ func main() {
 
 	err = dg.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
+		log.Fatal(err)
 		return
 	}
 	state.InitState()

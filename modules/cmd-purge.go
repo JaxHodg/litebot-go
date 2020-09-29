@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"log"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -43,13 +44,19 @@ func cmdPurge(args []string, session *discordgo.Session, event *discordgo.Messag
 	messagesToDelete := make([]string, 1)
 	messagesToDelete[0] = event.Message.ID
 
-	messages, _ := session.ChannelMessages(event.Message.ChannelID, num, event.Message.ID, "", "")
+	messages, err := session.ChannelMessages(event.Message.ChannelID, num, event.Message.ID, "", "")
+	if err != nil {
+		log.Println(err)
+	}
 
 	for _, m := range messages {
 		messagesToDelete = append(messagesToDelete, m.ID)
 	}
 
-	session.ChannelMessagesBulkDelete(event.Message.ChannelID, messagesToDelete)
+	err = session.ChannelMessagesBulkDelete(event.Message.ChannelID, messagesToDelete)
+	if err != nil {
+		log.Println(err)
+	}
 
 	return nil
 }

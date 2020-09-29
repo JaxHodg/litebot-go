@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"regexp"
 	"strings"
 
@@ -35,11 +36,17 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 		}
 		if command.RequiredPermissions != 0 {
 			if permissionsAllowed, isAdmin, err := functions.MemberHasPermission(session, event.Message, command.RequiredPermissions); !permissionsAllowed && !isAdmin || err != nil {
-				session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+commandName))
+				_, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+commandName))
+				if err != nil {
+					log.Println(err)
+				}
 				return
 			}
 		}
 		response = command.Function(args[1:], session, event)
 	}
-	session.ChannelMessageSendEmbed(event.ChannelID, response)
+	_, err := session.ChannelMessageSendEmbed(event.ChannelID, response)
+	if err != nil {
+		log.Println(err)
+	}
 }

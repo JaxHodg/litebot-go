@@ -3,6 +3,7 @@ package state
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"../functions"
@@ -51,23 +52,50 @@ func InitState() {
 
 // DumpEnabled dumps the data for which commands are enabled to json
 func DumpEnabled() {
-	jsonData, _ := json.Marshal(GuildEnabled)
-	jsonFile, _ := os.Create("./GuildEnabled.json")
-	jsonFile.Write(jsonData)
+	jsonData, err := json.Marshal(GuildEnabled)
+	if err != nil {
+		log.Println(err)
+	}
+	jsonFile, err := os.Create("./GuildEnabled.json")
+	if err != nil {
+		log.Println(err)
+	}
+	_, err = jsonFile.Write(jsonData)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // DumpData dumps the strings to json
 func DumpData() {
-	jsonData, _ := json.Marshal(GuildData)
-	jsonFile, _ := os.Create("./GuildData.json")
-	jsonFile.Write(jsonData)
+	jsonData, err := json.Marshal(GuildData)
+	if err != nil {
+		log.Println(err)
+	}
+	jsonFile, err := os.Create("./GuildData.json")
+	if err != nil {
+		log.Println(err)
+	}
+	_, err = jsonFile.Write(jsonData)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // DumpLists dumps the []strings to json
 func DumpLists() {
-	jsonData, _ := json.Marshal(GuildLists)
-	jsonFile, _ := os.Create("./GuildLists.json")
-	jsonFile.Write(jsonData)
+	jsonData, err := json.Marshal(GuildLists)
+	if err != nil {
+		log.Println(err)
+	}
+	jsonFile, err := os.Create("./GuildLists.json")
+	if err != nil {
+		log.Println(err)
+	}
+	_, err = jsonFile.Write(jsonData)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 //VerifyState creates state if missing for selected Guild

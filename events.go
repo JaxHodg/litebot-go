@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/bwmarrin/discordgo"
 
 	"./functions"
@@ -14,7 +16,10 @@ func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 	}
 
 	if event.Message.Content == "<@!405829095054770187>" {
-		session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
+		_, err := session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	modules.BlockMessage(session, event.Message)
 

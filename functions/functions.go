@@ -1,6 +1,8 @@
 package functions
 
 import (
+	"errors"
+	"log"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -11,7 +13,10 @@ func MemberHasPermission(session *discordgo.Session, message *discordgo.Message,
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
 	if !VerifyMessage(session, message) {
-		return false, false, nil //Error with message details
+		return false, false, errors.New("Unable to verify message") //Error with message details
+	}
+	if message.Member == nil {
+		return false, false, errors.New("Nil member")
 	}
 	for _, roleID := range message.Member.Roles {
 		role, err := session.State.Role(message.GuildID, roleID)
@@ -32,7 +37,6 @@ func MemberHasPermission(session *discordgo.Session, message *discordgo.Message,
 //CheckIfDm returns true if the message came from a Dm
 func CheckIfDm(s *discordgo.Session, m *discordgo.MessageCreate) bool {
 	channel, err := s.State.Channel(m.ChannelID)
-
 	if err != nil {
 		if channel, err = s.Channel(m.ChannelID); err != nil {
 			return false
@@ -70,7 +74,6 @@ func Contains(arr []string, str string) bool {
 }
 
 func Find(s []string, e string) int {
-
 	for i := 0; i < len(s); i++ {
 		if s[i] == e {
 			return i
@@ -85,12 +88,16 @@ func Remove(s []string, i int) []string {
 }
 
 func UpdateStatus(session *discordgo.Session) {
-	session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
+	err := session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bool {
 	message, err := session.ChannelMessage(oldmessage.ChannelID, oldmessage.ID)
 	if err != nil {
+		log.Println(err)
 		return false
 	}
 	if message.Author.ID == session.State.User.ID {
@@ -101,10 +108,12 @@ func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bo
 	}
 	channel, err := session.State.Channel(message.ChannelID)
 	if err != nil {
+		log.Println(err)
 		return false
 	}
 	guild, err := session.State.Guild(channel.GuildID)
 	if err != nil {
+		log.Println(err)
 		return false
 	}
 	content := message.Content
@@ -113,6 +122,7 @@ func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bo
 	}
 	_, err = session.GuildMember(guild.ID, message.Author.ID)
 	if err != nil {
+		log.Println(err)
 		return false
 	}
 	return true

@@ -1,6 +1,8 @@
 package manager
 
-import "strings"
+import (
+	"strings"
+)
 
 var Modules map[string]*Module
 

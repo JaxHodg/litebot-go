@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"log"
 	"regexp"
 	"strings"
 
@@ -34,6 +35,7 @@ func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
 
 	_, err := session.Channel(channelID)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
@@ -47,6 +49,9 @@ func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
 	response := functions.NewGenericEmbed("New Member", message)
 
 	if response != nil {
-		session.ChannelMessageSendEmbed(channelID, response)
+		_, err := session.ChannelMessageSendEmbed(channelID, response)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }

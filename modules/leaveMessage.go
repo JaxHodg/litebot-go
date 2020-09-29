@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"log"
 	"regexp"
 	"strings"
 
@@ -35,6 +36,7 @@ func LeaveMessage(session *discordgo.Session, event *discordgo.GuildMemberRemove
 
 	_, err := session.Channel(channelID)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
@@ -48,6 +50,9 @@ func LeaveMessage(session *discordgo.Session, event *discordgo.GuildMemberRemove
 	response := functions.NewGenericEmbed("Member left", message)
 
 	if response != nil {
-		session.ChannelMessageSendEmbed(channelID, response)
+		_, err := session.ChannelMessageSendEmbed(channelID, response)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"log"
 	"strings"
 
 	"../functions"
@@ -26,6 +27,7 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 	if len(args) == 0 {
 		pm, err := session.UserChannelCreate(event.Message.Author.ID)
 		if err != nil {
+			log.Println(err)
 			return functions.NewErrorEmbed("Unable to send a DM containing blocked terms")
 		}
 		blockedList := state.CheckList(event.Message.GuildID, "blocked")
@@ -41,7 +43,10 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 			embed.Description = "No blocked terms"
 		}
 
-		session.ChannelMessageSendEmbed(pm.ID, embed)
+		_, err = session.ChannelMessageSendEmbed(pm.ID, embed)
+		if err != nil {
+			log.Println(err)
+		}
 		return functions.NewGenericEmbed("Blocked Terms", "Check your DMs for a list of blocked terms")
 	}
 	pos := functions.Find(state.CheckList(event.Message.GuildID, "blocked"), data)
