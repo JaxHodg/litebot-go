@@ -10,6 +10,9 @@ import (
 func MemberHasPermission(session *discordgo.Session, message *discordgo.Message, permission int) (bool, bool, error) { // Perm, Admin, Error
 	// Iterate through the role IDs stored in member.Roles
 	// to check permissions
+	if !VerifyMessage(session, message) {
+		return false, false, nil //Error with message details
+	}
 	for _, roleID := range message.Member.Roles {
 		role, err := session.State.Role(message.GuildID, roleID)
 		if err != nil {
@@ -85,8 +88,8 @@ func UpdateStatus(session *discordgo.Session) {
 	session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
 }
 
-func VerifyMessage(session *discordgo.Session, message *discordgo.Message) bool {
-	message, err := session.ChannelMessage(message.ChannelID, message.ID)
+func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bool {
+	message, err := session.ChannelMessage(oldmessage.ChannelID, oldmessage.ID)
 	if err != nil {
 		return false
 	}

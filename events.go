@@ -9,7 +9,6 @@ import (
 )
 
 func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
-	functions.UpdateStatus(session)
 	if !functions.VerifyMessage(session, event.Message) {
 		return //Error with message details
 	}
@@ -29,14 +28,18 @@ func DiscordMessageUpdate(session *discordgo.Session, event *discordgo.MessageUp
 	modules.BlockMessage(session, event.Message)
 }
 
+func DiscordConnect(session *discordgo.Session, event *discordgo.Connect) {
+	functions.UpdateStatus(session)
+}
+
 // DiscordGuildMemberAdd handles a user joining the server
 func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
-	functions.UpdateStatus(session)
 	modules.JoinMessage(session, event)
+	functions.UpdateStatus(session)
 }
 
 // DiscordGuildMemberRemove handles a user leaving the server
 func DiscordGuildMemberRemove(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
-	functions.UpdateStatus(session)
 	modules.LeaveMessage(session, event)
+	functions.UpdateStatus(session)
 }

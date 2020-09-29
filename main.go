@@ -7,7 +7,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"./functions"
 	"./state"
 
 	"github.com/bwmarrin/discordgo"
@@ -27,6 +26,7 @@ func main() {
 	dg.AddHandler(DiscordMessageUpdate)
 	dg.AddHandler(DiscordGuildMemberAdd)
 	dg.AddHandler(DiscordGuildMemberRemove)
+	dg.AddHandler(DiscordConnect)
 
 	err = dg.Open()
 	if err != nil {
@@ -34,7 +34,6 @@ func main() {
 		return
 	}
 	state.InitState()
-	functions.UpdateStatus(dg)
 
 	fmt.Println("Lite-bot is now running.  Press CTRL-C to exit.")
 
