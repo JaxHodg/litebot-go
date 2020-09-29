@@ -26,7 +26,13 @@ func LeaveMessage(session *discordgo.Session, event *discordgo.GuildMemberRemove
 	}
 
 	re := regexp.MustCompile(`<#(\d*)>`)
-	channelID := re.FindStringSubmatch(state.CheckData(event.GuildID, "leavechannel"))[1]
+
+	submatch := re.FindStringSubmatch(state.CheckData(event.GuildID, "leavechannel"))
+	if len(submatch) == 0 {
+		return
+	}
+	channelID := submatch[1]
+
 	_, err := session.Channel(channelID)
 	if err != nil {
 		return

@@ -25,7 +25,13 @@ func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
 	}
 
 	re := regexp.MustCompile(`<#(\d*)>`)
-	channelID := re.FindStringSubmatch(state.CheckData(event.GuildID, "joinchannel"))[1]
+
+	submatch := re.FindStringSubmatch(state.CheckData(event.GuildID, "joinchannel"))
+	if len(submatch) == 0 {
+		return
+	}
+	channelID := submatch[1]
+
 	_, err := session.Channel(channelID)
 	if err != nil {
 		return
