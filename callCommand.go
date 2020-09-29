@@ -34,8 +34,9 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 			response = functions.NewErrorEmbed(commandName + " is disabled")
 		}
 		if command.RequiredPermissions != 0 {
-			if permissionsAllowed, isAdmin, _ := functions.MemberHasPermission(session, event.Message, command.RequiredPermissions); !permissionsAllowed && !isAdmin {
-				response = functions.NewErrorEmbed("You do not have the required permissions to use " + commandName)
+			if permissionsAllowed, isAdmin, err := functions.MemberHasPermission(session, event.Message, command.RequiredPermissions); !permissionsAllowed && !isAdmin || err != nil {
+				session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+commandName))
+				return
 			}
 		}
 		response = command.Function(args[1:], session, event)

@@ -23,8 +23,24 @@ func init() {
 
 func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
 	data := strings.Join(args, " ")
-	if data == "" {
-		return functions.NewErrorEmbed("You must specify a term to unblock")
+	if len(args) == 0 {
+		//return functions.NewErrorEmbed("You must specify a term to unblock")
+		pm, err := session.UserChannelCreate(event.Message.Author.ID)
+		if err != nil {
+			return functions.NewErrorEmbed("Unable to send a DM containing blocked terms")
+		}
+		blockedList := state.CheckList(event.Message.GuildID, "blocked")
+
+		embed := &discordgo.MessageEmbed{}
+		embed.Color = 0xEBCB8B
+
+		embed.Title = "Blocked Terms"
+
+		for i := range blockedList {
+			embed.Description = embed.Description + "```" + blockedList[i] + "```"
+		}
+		_, err = session.ChannelMessageSendEmbed(pm.ID, embed)
+		return functions.NewGenericEmbed("Blocked Terms", "Check your DMs for a list of blocked terms")
 	}
 	pos := functions.Find(state.CheckList(event.Message.GuildID, "blocked"), data)
 	if pos < 0 {
