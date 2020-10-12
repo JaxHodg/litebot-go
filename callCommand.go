@@ -32,7 +32,11 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 
 	if command, exists := manager.Commands[commandName]; exists {
 		if !state.CheckEnabled(event.GuildID, commandName) {
-			response = functions.NewErrorEmbed(commandName + " is disabled")
+			_, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed(commandName+" is disabled"))
+			if err != nil {
+				log.Println(err)
+			}
+			return
 		}
 		if command.RequiredPermissions != 0 {
 			if permissionsAllowed, isAdmin, err := functions.MemberHasPermission(session, event.Message, command.RequiredPermissions); !permissionsAllowed && !isAdmin || err != nil {
@@ -44,9 +48,9 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 			}
 		}
 		response = command.Function(args[1:], session, event)
-	}
-	_, err := session.ChannelMessageSendEmbed(event.ChannelID, response)
-	if err != nil {
-		log.Println(err)
+		_, err := session.ChannelMessageSendEmbed(event.ChannelID, response)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }

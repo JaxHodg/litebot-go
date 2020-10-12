@@ -21,6 +21,9 @@ func init() {
 }
 
 func BlockMessage(session *discordgo.Session, message *discordgo.Message) {
+	if message.Member == nil {
+		return
+	}
 	_, isAdmin, err := functions.MemberHasPermission(session, message, discordgo.PermissionAdministrator)
 	if err != nil {
 		log.Println(err)

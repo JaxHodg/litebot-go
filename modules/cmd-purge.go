@@ -47,6 +47,7 @@ func cmdPurge(args []string, session *discordgo.Session, event *discordgo.Messag
 	messages, err := session.ChannelMessages(event.Message.ChannelID, num, event.Message.ID, "", "")
 	if err != nil {
 		log.Println(err)
+		return functions.NewErrorEmbed("Unable to purge messages")
 	}
 
 	for _, m := range messages {

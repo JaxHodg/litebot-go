@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	file, err := os.Open("./key.config")
 	if err != nil {
 		os.Create("./key.config")

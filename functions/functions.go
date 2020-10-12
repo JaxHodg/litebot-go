@@ -10,28 +10,14 @@ import (
 
 // MemberHasPermission returns whether a member has the requested permission and whether they have admin
 func MemberHasPermission(session *discordgo.Session, message *discordgo.Message, permission int) (bool, bool, error) { // Perm, Admin, Error
-	// Iterate through the role IDs stored in member.Roles
-	// to check permissions
-	if !VerifyMessage(session, message) {
-		return false, false, errors.New("Unable to verify message") //Error with message details
-	}
 	if message.Member == nil {
 		return false, false, errors.New("Nil member")
 	}
-	for _, roleID := range message.Member.Roles {
-		role, err := session.State.Role(message.GuildID, roleID)
-		if err != nil {
-			return false, false, err
-		}
-		if role.Permissions&permission != 0 {
-			if role.Permissions&discordgo.PermissionAdministrator != 0 {
-				return true, true, nil
-			}
-			return true, false, nil
-		}
+	userPerm, err := session.State.UserChannelPermissions(message.Author.ID, message.ChannelID)
+	if err != nil {
+		//return false, false, err
 	}
-
-	return false, false, nil
+	return userPerm&permission != 0, userPerm&discordgo.PermissionAdministrator != 0, nil
 }
 
 //CheckIfDm returns true if the message came from a Dm
@@ -97,7 +83,6 @@ func UpdateStatus(session *discordgo.Session) {
 func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bool {
 	message, err := session.ChannelMessage(oldmessage.ChannelID, oldmessage.ID)
 	if err != nil {
-		log.Println(err)
 		return false
 	}
 	if message.Author.ID == session.State.User.ID {
@@ -106,14 +91,13 @@ func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bo
 	if message.Author.Bot {
 		return false
 	}
+
 	channel, err := session.State.Channel(message.ChannelID)
 	if err != nil {
-		log.Println(err)
 		return false
 	}
 	guild, err := session.State.Guild(channel.GuildID)
 	if err != nil {
-		log.Println(err)
 		return false
 	}
 	content := message.Content
@@ -122,8 +106,19 @@ func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bo
 	}
 	_, err = session.GuildMember(guild.ID, message.Author.ID)
 	if err != nil {
-		log.Println(err)
 		return false
 	}
 	return true
+}
+
+func CanSpeak(session *discordgo.Session, channelID string) bool {
+	userPerm, err := session.State.UserChannelPermissions(session.State.User.ID, channelID)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	if userPerm&discordgo.PermissionSendMessages != -1 || userPerm&discordgo.PermissionAdministrator != -1 {
+		return true
+	}
+	return false
 }

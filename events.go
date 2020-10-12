@@ -12,18 +12,23 @@ import (
 
 func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if !functions.VerifyMessage(session, event.Message) {
-		return //Error with message details
+		return //Error with getting message data
 	}
 
 	if event.Message.Content == "<@!405829095054770187>" {
-		_, err := session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
-		if err != nil {
-			log.Println(err)
+		if functions.CanSpeak(session, event.Message.ChannelID) {
+			_, err := session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 	modules.BlockMessage(session, event.Message)
 
-	CallCommand(session, event)
+	if functions.CanSpeak(session, event.Message.ChannelID) {
+		CallCommand(session, event)
+	}
+
 }
 
 func DiscordMessageUpdate(session *discordgo.Session, event *discordgo.MessageUpdate) {
