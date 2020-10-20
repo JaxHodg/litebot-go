@@ -39,6 +39,8 @@ func main() {
 	dg.AddHandler(DiscordGuildMemberRemove)
 	dg.AddHandler(DiscordConnect)
 
+	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsAllWithoutPrivileged | discordgo.IntentsGuildMembers)
+
 	err = dg.Open()
 	if err != nil {
 		log.Fatal(err)

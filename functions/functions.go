@@ -2,6 +2,7 @@ package functions
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -13,8 +14,9 @@ func MemberHasPermission(session *discordgo.Session, message *discordgo.Message,
 	if message.Member == nil {
 		return false, false, errors.New("Nil member")
 	}
-	userPerm, err := session.State.UserChannelPermissions(message.Author.ID, message.ChannelID)
+	userPerm, err := session.UserChannelPermissions(message.Author.ID, message.ChannelID)
 	if err != nil {
+		fmt.Println(err)
 		//return false, false, err
 	}
 	return userPerm&permission != 0, userPerm&discordgo.PermissionAdministrator != 0, nil
@@ -112,7 +114,7 @@ func VerifyMessage(session *discordgo.Session, oldmessage *discordgo.Message) bo
 }
 
 func CanSpeak(session *discordgo.Session, channelID string) bool {
-	userPerm, err := session.State.UserChannelPermissions(session.State.User.ID, channelID)
+	userPerm, err := session.UserChannelPermissions(session.State.User.ID, channelID)
 	if err != nil {
 		log.Println(err)
 		return false

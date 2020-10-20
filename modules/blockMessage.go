@@ -20,6 +20,7 @@ func init() {
 	)
 }
 
+// BlockMessage checks if message contains any blocked terms
 func BlockMessage(session *discordgo.Session, message *discordgo.Message) {
 	if message.Member == nil {
 		return

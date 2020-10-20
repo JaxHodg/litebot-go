@@ -20,6 +20,7 @@ func init() {
 	)
 }
 
+// JoinMessage announces when a user joins the guild
 func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
 	if !state.CheckEnabled(event.GuildID, "JoinMessage") {
 		return
