@@ -39,5 +39,9 @@ func cmdSet(args []string, session *discordgo.Session, event *discordgo.MessageC
 
 	state.SetData(event.Message.GuildID, args[0], data)
 
+	if value == "joinmessage" || value == "leavemessage" {
+		return functions.NewGenericEmbed("Set", "Successfully set `"+args[0]+"` to `"+data+"`"+"\nTip: if your message contains `{user}` I will replace it by mentioning the user")
+	}
+
 	return functions.NewGenericEmbed("Set", "Successfully set `"+args[0]+"` to `"+data+"`")
 }
