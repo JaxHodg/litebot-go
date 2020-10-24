@@ -31,6 +31,8 @@ func cmdEnable(args []string, session *discordgo.Session, event *discordgo.Messa
 
 	if !manager.IsValidModule(module) && !manager.IsValidCommand(module) {
 		return functions.NewErrorEmbed(module + " is not a valid module")
+	} else if !manager.IsValidModule(module) {
+		return functions.NewErrorEmbed(module + " cannot be enabled")
 	} else if state.CheckEnabled(event.Message.GuildID, module) {
 		return functions.NewGenericEmbed("Enabled", manager.GetModule(module).Name+" is already enabled")
 	}

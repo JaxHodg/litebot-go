@@ -32,7 +32,7 @@ func cmdDisable(args []string, session *discordgo.Session, event *discordgo.Mess
 	if !manager.IsValidModule(module) && !manager.IsValidCommand(module) {
 		return functions.NewErrorEmbed(module + " is not a valid Module")
 	} else if !manager.IsValidModule(module) {
-		return functions.NewErrorEmbed(manager.GetModule(module).Name + " cannot be disabled")
+		return functions.NewErrorEmbed(module + " cannot be disabled")
 	} else if !state.CheckEnabled(event.Message.GuildID, module) {
 		return functions.NewGenericEmbed("Disabled", manager.GetModule(module).Name+" is already disabled")
 	}
