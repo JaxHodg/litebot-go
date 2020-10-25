@@ -4,9 +4,13 @@ Lite-bot is a simple and customizable bot for server moderation with features li
 ## TODO:
 - More user friendly
     - Give users more information with !help\
+    - Add more tips and other useful information
 - Queue system
     - Useful for games like Among us or Animal Crossing
+- React for role system
+    - Useful for big servers
 - Fix DMs
+    - Not really necessary right now
     - Won't respond to DMs because it can't determine what Guild the message is from
 
 ## Documentation
