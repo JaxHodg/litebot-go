@@ -133,10 +133,13 @@ func VerifyState(guildID string) {
 }
 
 // CheckEnabled checks if a command is enabled
-func CheckEnabled(guildID string, command string) bool {
+func CheckEnabled(guildID string, module string) bool {
 	VerifyState(guildID)
-	if _, ok := manager.Modules[command]; ok {
-		return GuildEnabled[guildID][command]
+	err, ok := manager.Modules[module]
+	if ok {
+		return GuildEnabled[guildID][module]
+	} else if err != nil {
+		log.Println(err)
 	}
 	return true
 }

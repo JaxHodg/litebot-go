@@ -23,7 +23,7 @@ func init() {
 
 // LeaveMessage announces when a user leaves the guild
 func LeaveMessage(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
-	if !state.CheckEnabled(event.GuildID, "LeaveMessage") {
+	if !state.CheckEnabled(event.GuildID, "leavemessage") {
 		return
 	}
 
