@@ -2,6 +2,9 @@
 Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, and purge, and blocking words. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are on the way.
 
 ## TODO:
+- Feature to move/add spoilers to other's messages
+    -!spoil to repost the last message with a spoiler tag
+    -!move #other-channel to repost the message in the new channel
 - More user friendly
     - Give users more information with !help\
     - Add more tips and other useful information
