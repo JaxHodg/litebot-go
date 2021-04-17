@@ -2,21 +2,23 @@
 Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, and purge, and blocking words. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are on the way.
 
 ## TODO:
-- Feature to move/add spoilers to other's messages
+- Move/mark as spoiler other's messages
     -!spoil to repost the last message with a spoiler tag
     -!move #other-channel to repost the message in the new channel
 - WWE Intro Music
-    - Users can set a music clip that will play when they join the server
-- More user friendly
-    - Give users more information with !help\
-    - Add more tips and other useful information
+    - Users can set a music clip that will play when they join the voice channel
+    - Probably really annoying so limit clip length and/or number of daily plays
 - Queue system
-    - Useful for games like Among us or Animal Crossing
+    - Useful for games like Among us or Animal Crossing where limited lobby size
 - React for role system
     - Useful for big servers
+- Improve Database/Move to external database
+- More user friendly
+    - Give users more information with !help
+    - Add more tips and other useful information
 - Fix DMs
     - Not really necessary right now
-    - Won't respond to DMs because it can't determine what Guild the message is from
+    - Can't process DMs because it can't determine what Guild the message is from
 
 ## Documentation
 
