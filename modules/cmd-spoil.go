@@ -2,6 +2,7 @@ package modules
 
 import (
 	"log"
+	"regexp"
 	"strings"
 
 	"github.com/JaxHodg/litebot-go/functions"
@@ -12,8 +13,8 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Spoil",
-			Function:            cmdSpoil,
+			Name:                "Spoiler",
+			Function:            cmdSpoiler,
 			Description:         "Marks the previous message as a spoiler",
 			RequiredPermissions: discordgo.PermissionManageMessages,
 			GuildOnly:           true,
@@ -21,52 +22,55 @@ func init() {
 	)
 	manager.RegisterModule(
 		&manager.Module{
-			Name:        "Spoil",
+			Name:        "Spoiler",
 			Description: "Marks the previous message as a spoiler",
 		},
 	)
 }
 
-func cmdSpoil(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	messages, err := session.ChannelMessages(event.Message.ChannelID, 2, event.Message.ID, "", event.Message.ID)
-	if err != nil {
-		return functions.NewErrorEmbed("Unable to find any messages")
+func cmdSpoiler(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
+	var spoilMessage *discordgo.Message
+	if len(args) == 0 {
+		messages, err := session.ChannelMessages(event.Message.ChannelID, 2, event.Message.ID, "", event.Message.ID)
+		if err != nil {
+			return functions.NewErrorEmbed("Unable to find any messages")
+		}
+		spoilMessage = messages[1]
+	} else if len(args) == 1 {
+		re := regexp.MustCompile(`https:\/\/discord\.com\/channels\/\d+\/\d+\/(\d+)`)
+		substring := re.FindStringSubmatch(args[0])
+
+		if len(substring) == 0 {
+			return functions.NewErrorEmbed("You must specify a message")
+		}
+
+		messageID := substring[1]
+
+		message, err := session.ChannelMessage(event.Message.ChannelID, messageID)
+		if err != nil {
+			return functions.NewErrorEmbed("Unable to find any messages")
+		}
+		spoilMessage = message
 	}
-	if len(messages[1].Embeds) > 0 {
+	/**if len(messages[1].Embeds) > 0 {
 		return functions.NewErrorEmbed("Unable to mark an embed as spoiler")
-	}
-
-	/**if len(args) == 0 {
-		return functions.NewErrorEmbed("You must specify a user")
-	}
-
-	re := regexp.MustCompile(`[<][@](\d*)[>]`)
-	substring := re.FindStringSubmatch(args[0])
-
-	if len(substring) == 0 {
-		return functions.NewErrorEmbed("You must specify a user")
-	}
-
-	userID := substring[1]
-
-	user, err := session.GuildMember(event.Message.GuildID, userID)
-	if err != nil {
-		return functions.NewErrorEmbed("Invalid user")
-	}
-
-	err = session.GuildMemberDelete(event.Message.GuildID, userID)
-	if err != nil {
-		return functions.NewErrorEmbed("Unable to kick user")
 	}**/
 
-	content := "||" + strings.Replace(messages[1].Content, "|||", "", 0) + "||"
-	user := messages[1].Author
+	imageURL := ""
+	if len(spoilMessage.Attachments) > 0 {
+		imageURL = spoilMessage.Attachments[0].URL
+	}
+	if spoilMessage.Content+imageURL == "" {
+		return functions.NewErrorEmbed("Nothing to mark as a spoiler")
+	}
+	content := "||" + strings.Replace(spoilMessage.Content, "||", "", -1) + imageURL + "||"
+	user := spoilMessage.Author
 
 	messagesToDelete := make([]string, 1)
 	messagesToDelete[0] = event.Message.ID
-	messagesToDelete = append(messagesToDelete, messages[1].ID)
+	messagesToDelete = append(messagesToDelete, spoilMessage.ID)
 
-	err = session.ChannelMessagesBulkDelete(event.Message.ChannelID, messagesToDelete)
+	err := session.ChannelMessagesBulkDelete(event.Message.ChannelID, messagesToDelete)
 	if err != nil {
 		log.Println(err)
 		return functions.NewErrorEmbed("Unable to delete original message")
