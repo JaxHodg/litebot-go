@@ -5,9 +5,9 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"./functions"
-	"./modules"
-	"./state"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/modules"
+	"github.com/JaxHodg/litebot-go/state"
 )
 
 func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {

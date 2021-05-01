@@ -6,8 +6,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"../functions"
-	"../manager"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/manager"
 )
 
 func init() {

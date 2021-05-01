@@ -3,9 +3,9 @@ package modules
 import (
 	"strings"
 
-	"../functions"
-	"../manager"
-	"../state"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/manager"
+	"github.com/JaxHodg/litebot-go/state"
 
 	"github.com/bwmarrin/discordgo"
 )

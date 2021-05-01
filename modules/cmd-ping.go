@@ -1,8 +1,8 @@
 package modules
 
 import (
-	"../functions"
-	"../manager"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/manager"
 	"github.com/bwmarrin/discordgo"
 )
 

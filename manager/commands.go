@@ -17,7 +17,7 @@ type Command struct {
 	Description string
 
 	GuildOnly           bool
-	RequiredPermissions int
+	RequiredPermissions int64
 }
 
 func RegisterCommand(command *Command) {

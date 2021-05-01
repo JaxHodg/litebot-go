@@ -10,9 +10,9 @@ import (
 )
 
 // MemberHasPermission returns whether a member has the requested permission and whether they have admin
-func MemberHasPermission(session *discordgo.Session, message *discordgo.Message, permission int) (bool, bool, error) { // Perm, Admin, Error
+func MemberHasPermission(session *discordgo.Session, message *discordgo.Message, permission int64) (bool, bool, error) { // Perm, Admin, Error
 	if message.Member == nil {
-		return false, false, errors.New("Nil member")
+		return false, false, errors.New("nil member")
 	}
 	userPerm, err := session.UserChannelPermissions(message.Author.ID, message.ChannelID)
 	if err != nil {
@@ -51,6 +51,17 @@ func NewErrorEmbed(embedMsg string) *discordgo.MessageEmbed {
 	return errorEmbed
 }
 
+func NewRepostEmbed(msg string, author *discordgo.User) *discordgo.MessageEmbed {
+	repostEmbed := &discordgo.MessageEmbed{}
+	repostEmbed.Title = msg
+	repostEmbed.Author = &discordgo.MessageEmbedAuthor{
+		Name:    "@" + author.Username + "#" + author.Discriminator,
+		IconURL: author.AvatarURL("256"),
+	}
+	repostEmbed.Color = 0x3B4252
+	return repostEmbed
+}
+
 // Contains checks if an array contains a string
 func Contains(arr []string, str string) bool {
 	for _, a := range arr {
@@ -76,7 +87,15 @@ func Remove(s []string, i int) []string {
 }
 
 func UpdateStatus(session *discordgo.Session) {
-	err := session.UpdateStatus(0, "@lite-bot | "+strconv.Itoa(len(session.State.Guilds))+" Guilds")
+	activity := discordgo.Activity{
+		Name: ("@lite-bot | " + strconv.Itoa(len(session.State.Guilds)) + " Guilds"),
+		Type: 1,
+	}
+
+	err := session.UpdateStatusComplex(
+		discordgo.UpdateStatusData{
+			Activities: []*discordgo.Activity{&activity}})
+
 	if err != nil {
 		log.Println(err)
 	}

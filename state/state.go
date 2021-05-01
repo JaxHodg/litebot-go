@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"../functions"
-	"../manager"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/manager"
 )
 
 // GuildEnabled store data about which commands/events are enabled
