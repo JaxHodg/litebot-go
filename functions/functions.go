@@ -89,7 +89,7 @@ func Remove(s []string, i int) []string {
 func UpdateStatus(session *discordgo.Session) {
 	activity := discordgo.Activity{
 		Name: ("@lite-bot | " + strconv.Itoa(len(session.State.Guilds)) + " Guilds"),
-		Type: 1,
+		Type: 0,
 	}
 
 	err := session.UpdateStatusComplex(
