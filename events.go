@@ -17,7 +17,13 @@ func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 
 	if event.Message.Content == "<@!405829095054770187>" {
 		if functions.CanSpeak(session, event.Message.ChannelID) {
-			_, err := session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+state.CheckData(event.GuildID, "prefix")+"`"))
+
+			prefix := state.CheckData(event.GuildID, "prefix")
+			if prefix == "" {
+				prefix = "!"
+			}
+
+			_, err := session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+prefix+"`"))
 			if err != nil {
 				log.Println(err)
 			}

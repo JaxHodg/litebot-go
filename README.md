@@ -3,8 +3,7 @@ Lite-bot is a simple and customizable bot for server moderation with features li
 
 ## TODO:
 - Move/mark as spoiler other's messages
-    -!spoil to repost the last message with a spoiler tag
-    -!move #other-channel to repost the message in the new channel
+    -!move #other-channel to move the message in the new channel
 - WWE Intro Music
     - Users can set a music clip that will play when they join the voice channel
     - Probably really annoying so limit clip length and/or number of daily plays
@@ -28,6 +27,7 @@ Lite-bot is a simple and customizable bot for server moderation with features li
 - Kick/ban users
 - Purge messages
 - Block custom word list
+- Mark messages as spoiler
 
 ### Join Message
 - Sends a message when a user joins the Server
@@ -63,3 +63,8 @@ Lite-bot is a simple and customizable bot for server moderation with features li
 - Used to block a specified term
 - Admins are exempt from message filtering
 - `!block discord.gg`
+
+### Spoiler
+- Used to mark messages as spoilers
+- lite-bot will delete and resend the message as a spoiler
+- `!spoiler` or `!spoiler https://discord.com/channels/758362896094199810/758363008450822165/798312328113291274`
