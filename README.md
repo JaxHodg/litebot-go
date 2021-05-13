@@ -1,8 +1,10 @@
 # litebot
 Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, and purge, and blocking words. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are on the way.
 
-## TODO:
-- Move/mark as spoiler other's messages
+## TODO
+- Improve/Migrate Database
+    - Clear all settings when leaving server
+- Move other's messages
     -!move #other-channel to move the message in the new channel
 - WWE Intro Music
     - Users can set a music clip that will play when they join the voice channel
@@ -11,7 +13,6 @@ Lite-bot is a simple and customizable bot for server moderation with features li
     - Useful for games like Among us or Animal Crossing where limited lobby size
 - React for role system
     - Useful for big servers
-- Improve Database/Move to external database
 - More user friendly
     - Give users more information with !help
     - Add more tips and other useful information
