@@ -3,8 +3,8 @@ package modules
 import (
 	"regexp"
 
-	"../functions"
-	"../manager"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/manager"
 	"github.com/bwmarrin/discordgo"
 )
 

@@ -3,7 +3,7 @@ package modules
 import (
 	"strings"
 
-	"../manager"
+	"github.com/JaxHodg/litebot-go/manager"
 	"github.com/bwmarrin/discordgo"
 )
 

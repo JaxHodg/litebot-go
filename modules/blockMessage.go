@@ -4,9 +4,9 @@ import (
 	"log"
 	"strings"
 
-	"../functions"
-	"../manager"
-	"../state"
+	"github.com/JaxHodg/litebot-go/functions"
+	"github.com/JaxHodg/litebot-go/manager"
+	"github.com/JaxHodg/litebot-go/state"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -30,7 +30,7 @@ func BlockMessage(session *discordgo.Session, message *discordgo.Message) {
 		log.Println(err)
 		return
 	}
-	if isAdmin == true {
+	if isAdmin {
 		return
 	}
 	for _, s := range state.CheckList(message.GuildID, "blocked") {

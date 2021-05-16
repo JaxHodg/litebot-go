@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"./state"
+	"github.com/JaxHodg/litebot-go/state"
 
 	"github.com/bwmarrin/discordgo"
 )
