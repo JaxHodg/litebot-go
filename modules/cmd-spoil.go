@@ -11,6 +11,7 @@ import (
 )
 
 func init() {
+	manager.RegisterEnable("Spoiler", true)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:                "Spoiler",

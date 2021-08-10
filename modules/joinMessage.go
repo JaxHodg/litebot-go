@@ -12,36 +12,57 @@ import (
 )
 
 func init() {
+	manager.RegisterEnable("JoinMessage", false)
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "JoinMessage",
 			Description: "",
 		},
 	)
+	manager.RegisterVariable(
+		&manager.Variable{
+			Name:         "Message",
+			ModuleName:   "JoinMessage",
+			DefaultValue: "Welcome {user}",
+		},
+	)
+	manager.RegisterVariable(
+		&manager.Variable{
+			Name:         "Channel",
+			ModuleName:   "JoinMessage",
+			DefaultValue: "",
+		},
+	)
 }
 
 // JoinMessage announces when a user joins the guild
 func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
-	if !state.CheckEnabled(event.GuildID, "joinmessage") {
+	isEnabled, err := state.GetEnabled(event.GuildID, "JoinMessage")
+
+	if err != nil || !isEnabled {
 		return
 	}
 
 	re := regexp.MustCompile(`<#(\d*)>`)
 
-	submatch := re.FindStringSubmatch(state.CheckData(event.GuildID, "joinchannel"))
+	joinChannel, err := state.GetData(event.GuildID, "JoinMessage", "joinchannel")
+	if err != nil {
+		return
+	}
+	submatch := re.FindStringSubmatch(joinChannel)
 	if len(submatch) == 0 {
 		return
 	}
 	channelID := submatch[1]
 
-	_, err := session.Channel(channelID)
+	_, err = session.Channel(channelID)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	message := state.CheckData(event.GuildID, "joinmessage")
-	if message == "" {
+	message, err := state.GetData(event.GuildID, "JoinMessage", "JoinMessage")
+	if err != nil {
 		return
 	}
 

@@ -9,6 +9,7 @@ import (
 )
 
 func init() {
+	manager.RegisterEnable("Kick", true)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:                "Kick",

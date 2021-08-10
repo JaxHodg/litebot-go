@@ -2,3 +2,6 @@ GuildData.json
 GuildEnabled.json
 GuildLists.json
 key.config
+vendor/
+.env
+GOOGLE_APPLICATION_CREDENTIALS.json

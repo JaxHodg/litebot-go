@@ -10,6 +10,7 @@ import (
 )
 
 func init() {
+	manager.RegisterEnable("Ban", true)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:                "Ban",

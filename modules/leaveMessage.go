@@ -13,42 +13,63 @@ import (
 )
 
 func init() {
+	manager.RegisterEnable("LeaveMessage", false)
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "LeaveMessage",
 			Description: "",
 		},
 	)
+	manager.RegisterVariable(
+		&manager.Variable{
+			Name:         "Message",
+			ModuleName:   "LeaveMessage",
+			DefaultValue: "Goodbye {user}",
+		},
+	)
+	manager.RegisterVariable(
+		&manager.Variable{
+			Name:         "Channel",
+			ModuleName:   "LeaveMessage",
+			DefaultValue: "",
+		},
+	)
 }
 
 // LeaveMessage announces when a user leaves the guild
 func LeaveMessage(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
-	if !state.CheckEnabled(event.GuildID, "leavemessage") {
+	isEnabled, err := state.GetEnabled(event.GuildID, "LeaveMessage")
+
+	if err != nil || !isEnabled {
 		return
 	}
 
 	re := regexp.MustCompile(`<#(\d*)>`)
 
-	submatch := re.FindStringSubmatch(state.CheckData(event.GuildID, "leavechannel"))
+	leaveChannel, err := state.GetData(event.GuildID, "LeaveMessage", "leavechannel")
+	if err != nil {
+		return
+	}
+	submatch := re.FindStringSubmatch(leaveChannel)
 	if len(submatch) == 0 {
 		return
 	}
 	channelID := submatch[1]
 
-	_, err := session.Channel(channelID)
+	_, err = session.Channel(channelID)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	message := state.CheckData(event.GuildID, "leavemessage")
-	if message == "" {
+	message, err := state.GetData(event.GuildID, "LeaveMessage", "LeaveMessage")
+	if err != nil {
 		return
 	}
 
 	message = strings.ReplaceAll(message, "{user}", event.Mention())
 
-	response := functions.NewGenericEmbed("Member left", message)
+	response := functions.NewGenericEmbed("Member Left", message)
 
 	if response != nil {
 		_, err := session.ChannelMessageSendEmbed(channelID, response)

@@ -11,6 +11,7 @@ import (
 )
 
 func init() {
+	manager.RegisterEnable("Purge", true)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:                "Purge",
