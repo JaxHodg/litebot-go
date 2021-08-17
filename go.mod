@@ -10,7 +10,6 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/joho/godotenv v1.3.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/mod v0.5.0 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
 	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5 // indirect
 	golang.org/x/sys v0.0.0-20210817190340-bfb29a6856f2 // indirect
@@ -18,4 +17,4 @@ require (
 	google.golang.org/genproto v0.0.0-20210816143620-e15ff196659d // indirect
 )
 
-// replace github.com/JaxHodg/litebot-go v0.0.0 => ../litebot-go
+replace github.com/JaxHodg/litebot-go v0.0.0 => ../litebot-go
