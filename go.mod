@@ -17,4 +17,4 @@ require (
 	google.golang.org/genproto v0.0.0-20210816143620-e15ff196659d // indirect
 )
 
-replace github.com/JaxHodg/litebot-go v0.0.0 => ../litebot-go
+// replace github.com/JaxHodg/litebot-go v0.0.0 => ../litebot-go
