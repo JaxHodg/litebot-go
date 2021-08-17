@@ -11,7 +11,6 @@ COPY functions ./
 COPY manager ./
 COPY modules ./
 COPY state ./
-COPY vendor ./
 
 RUN go build -o /litebot-go
 
