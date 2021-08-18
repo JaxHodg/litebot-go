@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o github.com/JaxHodg/litebot-go
+RUN go build -o litebot-go
 
 ##
 ## Deploy
