@@ -27,6 +27,20 @@ steps:
         "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/litebot:$SHORT_SHA",
       ]
 
+  # Deploy to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "helloworld",
+        "--image=us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/litebot:$SHORT_SHA",
+        "--region",
+        "us-east1",
+        "--platform",
+        "managed",
+      ]
+
 # Save test logs to Google Cloud Storage
 artifacts:
   objects:
