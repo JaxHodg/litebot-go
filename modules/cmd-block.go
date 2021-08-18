@@ -27,13 +27,13 @@ func cmdBlock(args []string, session *discordgo.Session, event *discordgo.Messag
 	if data == "" {
 		return functions.NewErrorEmbed("You must specify a term to block")
 	}
-	list, _ := state.GetList(event.Message.GuildID, "BlockMessage", "Blocked")
+	list, _ := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
 	/**if err != nil {
 		return functions.NewErrorEmbed("Error blocking term")
 	}**/
 	if functions.Find(list, data) != -1 {
 		return functions.NewErrorEmbed("`" + data + "` is already blocked")
 	}
-	state.AddToList(event.Message.GuildID, "BlockMessage", "Blocked", data)
-	return functions.NewGenericEmbed("Blocked", "Successfully blocked `"+data+"`")
+	state.AddToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", data)
+	return functions.NewGenericEmbed("BlockedTerms", "Successfully blocked `"+data+"`")
 }

@@ -12,26 +12,26 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("BlockMessage", false)
+	manager.RegisterEnable("BlockTerm", false)
 	manager.RegisterModule(
 		&manager.Module{
-			Name:        "BlockMessage",
+			Name:        "BlockTerm",
 			Description: "Blocks the specified term",
 		},
 	)
 	manager.RegisterVariable(
 		&manager.Variable{
-			Name: "Blocked",
+			Name: "BlockedTerms",
 
-			ModuleName: "BlockMessage",
+			ModuleName: "BlockTerm",
 
 			DefaultValue: []string{},
 		},
 	)
 }
 
-// BlockMessage checks if message contains any blocked terms
-func BlockMessage(session *discordgo.Session, message *discordgo.Message) {
+// BlockTerm checks if message contains any blocked terms
+func BlockTerm(session *discordgo.Session, message *discordgo.Message) {
 	if message.Member == nil {
 		return
 	}
@@ -43,7 +43,7 @@ func BlockMessage(session *discordgo.Session, message *discordgo.Message) {
 	if isAdmin {
 		return
 	}
-	list, err := state.GetList(message.GuildID, "BlockMessage", "Blocked")
+	list, err := state.GetList(message.GuildID, "BlockTerm", "BlockedTerms")
 	if err == nil {
 		for _, s := range list {
 			if strings.Contains(strings.ToLower(message.Content), s) {

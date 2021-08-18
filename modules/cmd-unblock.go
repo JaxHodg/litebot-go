@@ -30,7 +30,7 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 			log.Println(err)
 			return functions.NewErrorEmbed("Unable to send a DM containing blocked terms")
 		}
-		blockedList, err := state.GetList(event.Message.GuildID, "BlockMessage", "blocked")
+		blockedList, err := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
 		if err != nil {
 			log.Println(err)
 			return functions.NewErrorEmbed("Unable to send a DM containing blocked terms")
@@ -53,7 +53,7 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 		}
 		return functions.NewGenericEmbed("Blocked Terms", "Check your DMs for a list of blocked terms")
 	}
-	list, err := state.GetList(event.Message.GuildID, "BlockMessage", "Blocked")
+	list, err := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
 	if err != nil {
 		log.Println(err)
 		return functions.NewErrorEmbed("Error getting blocked terms")
@@ -63,6 +63,6 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 		return functions.NewErrorEmbed("`" + data + "` is not currently blocked")
 	}
 
-	state.RemoveToList(event.Message.GuildID, "BlockMessage", "Blocked", data)
-	return functions.NewGenericEmbed("Blocked", "Successfully unblocked `"+data+"`")
+	state.RemoveToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", data)
+	return functions.NewGenericEmbed("BlockedTerms", "Successfully unblocked `"+data+"`")
 }

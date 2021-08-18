@@ -34,7 +34,6 @@ func main() {
 		}
 		key = bytes.TrimSuffix(key, []byte{'\n'})
 	**/
-
 	dg, err := discordgo.New("Bot " + string(discordToken))
 	if err != nil {
 		log.Fatal(err)
@@ -54,6 +53,7 @@ func main() {
 		return
 	}
 	state.InitDB()
+	state.MigrateDB()
 
 	fmt.Println("Lite-bot is now running.  Press CTRL-C to exit.")
 

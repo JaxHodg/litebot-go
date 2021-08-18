@@ -26,7 +26,7 @@ func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 			}
 		}
 	}
-	modules.BlockMessage(session, event.Message)
+	modules.BlockTerm(session, event.Message)
 	if functions.CanSpeak(session, event.Message.ChannelID) {
 		CallCommand(session, event)
 	}
@@ -36,7 +36,7 @@ func DiscordMessageUpdate(session *discordgo.Session, event *discordgo.MessageUp
 	if !functions.VerifyMessage(session, event.Message) {
 		return //Error with message details
 	}
-	modules.BlockMessage(session, event.Message)
+	modules.BlockTerm(session, event.Message)
 }
 
 func DiscordConnect(session *discordgo.Session, event *discordgo.Connect) {
