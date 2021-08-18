@@ -6,13 +6,9 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
-COPY *.go ./
-COPY functions ./
-COPY manager ./
-COPY modules ./
-COPY state ./
+COPY . .
 
-RUN go build -o /litebot-go
+RUN go build -o github.com/JaxHodg/litebot-go
 
 ##
 ## Deploy
