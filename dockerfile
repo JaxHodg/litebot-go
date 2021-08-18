@@ -17,7 +17,7 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 
-COPY --from=build github.com/JaxHodg/litebot-go /litebot-go
+COPY --from=build /app/litebot-go /litebot-go
 
 # EXPOSE 8080
 
