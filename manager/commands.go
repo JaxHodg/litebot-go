@@ -2,6 +2,7 @@ package manager
 
 import (
 	"errors"
+	"sort"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -45,4 +46,17 @@ func IsValidCommand(commandID string) bool {
 
 	_, exists := Commands[commandID]
 	return exists
+}
+
+func ListCommands() []string {
+	keys := make([]string, 0, len(Commands))
+	for k := range Commands {
+
+		keys = append(keys, k)
+
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		return len(keys[i]) < len(keys[j])
+	})
+	return keys
 }

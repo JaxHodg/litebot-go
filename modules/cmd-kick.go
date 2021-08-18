@@ -14,7 +14,7 @@ func init() {
 		&manager.Command{
 			Name:                "Kick",
 			Function:            cmdKick,
-			Description:         "Kicks the mentioned user",
+			Description:         "Kicks the user from the server",
 			RequiredPermissions: discordgo.PermissionKickMembers,
 			GuildOnly:           true,
 		},
@@ -22,7 +22,7 @@ func init() {
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "Kick",
-			Description: "Kicks the mentioned user",
+			Description: "Kicks the user from the server",
 		},
 	)
 }

@@ -16,7 +16,7 @@ func init() {
 		&manager.Command{
 			Name:                "Set",
 			Function:            cmdSet,
-			Description:         "Sets the specified value",
+			Description:         "Sets a variable for a module",
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},

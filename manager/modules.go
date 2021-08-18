@@ -43,9 +43,7 @@ func IsValidModule(moduleID string) bool {
 func ListModules() []string {
 	keys := make([]string, 0, len(Modules))
 	for k := range Modules {
-
 		keys = append(keys, k)
-
 	}
 	sort.Slice(keys, func(i, j int) bool {
 		return len(keys[i]) < len(keys[j])

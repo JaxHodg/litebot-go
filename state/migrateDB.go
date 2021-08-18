@@ -58,7 +58,7 @@ func MigrateDB() {
 				moduleID = "blockterm"
 			}
 			fmt.Println(guildID + " " + moduleID + " " + strconv.FormatBool(value))
-			if value == false && manager.IsValidVariable(moduleID, "enabled") {
+			if !value && manager.IsValidVariable(moduleID, "enabled") {
 				_, err := client.Collection("guilds").Doc(guildID).Set(ctx, map[string]interface{}{
 					moduleID: map[string]interface{}{
 						"enabled": value,

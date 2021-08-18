@@ -16,7 +16,7 @@ func init() {
 		&manager.Command{
 			Name:                "Purge",
 			Function:            cmdPurge,
-			Description:         "Purges the specified number of messages",
+			Description:         "Deletes a specific number of messages",
 			RequiredPermissions: discordgo.PermissionManageMessages,
 			GuildOnly:           true,
 		},
@@ -24,7 +24,7 @@ func init() {
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "Purge",
-			Description: "Purges the specified number of messages",
+			Description: "Deletes a specific number of messages",
 		},
 	)
 }

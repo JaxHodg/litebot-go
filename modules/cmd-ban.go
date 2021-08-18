@@ -15,7 +15,7 @@ func init() {
 		&manager.Command{
 			Name:                "Ban",
 			Function:            cmdBan,
-			Description:         "Bans the mentioned user",
+			Description:         "Bans the user from the server",
 			RequiredPermissions: discordgo.PermissionBanMembers,
 			GuildOnly:           true,
 		},
@@ -23,7 +23,7 @@ func init() {
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "Ban",
-			Description: "Bans the mentioned user",
+			Description: "Bans the user from the server",
 		},
 	)
 }

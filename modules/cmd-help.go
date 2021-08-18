@@ -12,7 +12,7 @@ func init() {
 		&manager.Command{
 			Name:        "Help",
 			Function:    cmdHelp,
-			Description: "Displays this message",
+			Description: "Lists all the available commands",
 		},
 	)
 }
@@ -43,8 +43,9 @@ func cmdHelp(args []string, session *discordgo.Session, event *discordgo.Message
 		helpEmbed.Fields = make([]*discordgo.MessageEmbedField, len(manager.Commands))
 
 		i := 0
-		for j := range manager.Commands {
-			helpEmbed.Fields[i] = &discordgo.MessageEmbedField{Name: j, Value: manager.Commands[j].Description}
+		for _, commandID := range []string{"help", "kick", "ban", "ping", "purge", "spoiler", "enable", "disable", "block", "unblock", "set"} {
+			command, _ := manager.GetCommand(commandID)
+			helpEmbed.Fields[i] = &discordgo.MessageEmbedField{Name: command.Name, Value: command.Description}
 			i++
 		}
 	}

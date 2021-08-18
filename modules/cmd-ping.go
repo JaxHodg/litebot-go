@@ -11,7 +11,7 @@ func init() {
 		&manager.Command{
 			Name:        "Ping",
 			Function:    cmdPing,
-			Description: "Displays the current ping",
+			Description: "Pong",
 		},
 	)
 }
