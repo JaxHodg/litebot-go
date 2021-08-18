@@ -27,7 +27,6 @@ func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 		}
 	}
 	modules.BlockMessage(session, event.Message)
-
 	if functions.CanSpeak(session, event.Message.ChannelID) {
 		CallCommand(session, event)
 	}
@@ -52,6 +51,9 @@ func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMem
 
 // DiscordGuildMemberRemove handles a user leaving the server
 func DiscordGuildMemberRemove(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
+	if event.Member.User.ID == session.State.User.ID {
+		state.RemoveGuild(event.GuildID)
+	}
 	modules.LeaveMessage(session, event)
 	functions.UpdateStatus(session)
 }

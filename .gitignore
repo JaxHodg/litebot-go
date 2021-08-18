@@ -5,3 +5,4 @@ key.config
 vendor/
 .env
 GOOGLE_APPLICATION_CREDENTIALS.json
+TODO.md

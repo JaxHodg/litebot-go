@@ -1,0 +1,31 @@
+steps:
+  # Run tests and save to file
+  - name: golang
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - |
+        go get -u github.com/jstemmer/go-junit-report
+        2>&1 go test -timeout 1m -v ./... | tee sponge.log
+        /go/bin/go-junit-report -set-exit-code < sponge.log > ${SHORT_SHA}_test_log.xml
+
+  # Docker Build
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/litebot:$SHORT_SHA",
+        ".",
+      ]
+
+  # Docker push to Google Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/litebot:$SHORT_SHA",
+      ]
+# Store images in Google Artifact Registry
+images:
+  - us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/litebot:$SHORT_SHA

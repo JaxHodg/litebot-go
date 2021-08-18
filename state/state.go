@@ -217,3 +217,10 @@ func RemoveToList(guildID string, moduleID string, variableID string, value stri
 		log.Printf("An error has occurred: %s", err)
 	}
 }
+
+func RemoveGuild(guildID string) {
+	_, err := client.Collection("guilds").Doc(guildID).Delete(ctx)
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
+	}
+}
