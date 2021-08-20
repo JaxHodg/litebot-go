@@ -13,7 +13,8 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Block",
+			Name: "Block",
+
 			Function:            cmdBlock,
 			Description:         "Blocks the specified term",
 			RequiredPermissions: discordgo.PermissionAdministrator,
@@ -23,17 +24,22 @@ func init() {
 }
 
 func cmdBlock(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	data := strings.ToLower(strings.Join(args, " "))
-	if data == "" {
+	term := ""
+	if len(args) >= 1 {
+		term = strings.Join(args, " ")
+		term = strings.TrimSpace(term)
+		term = strings.ToLower(term)
+	}
+
+	if term == "" {
 		return functions.NewErrorEmbed("You must specify a term to block")
 	}
+
 	list, _ := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
-	/**if err != nil {
-		return functions.NewErrorEmbed("Error blocking term")
-	}**/
-	if functions.Find(list, data) != -1 {
-		return functions.NewErrorEmbed("`" + data + "` is already blocked")
+	if functions.Find(list, term) != -1 {
+		return functions.NewErrorEmbed("`" + term + "` is already blocked")
 	}
-	state.AddToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", data)
-	return functions.NewGenericEmbed("BlockedTerms", "Successfully blocked `"+data+"`")
+
+	state.AddToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", term)
+	return functions.NewGenericEmbed("BlockedTerms", "Successfully blocked `"+term+"`")
 }

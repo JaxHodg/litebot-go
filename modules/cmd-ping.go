@@ -12,7 +12,7 @@ func init() {
 			Name:        "Ping",
 			Function:    cmdPing,
 			Description: "Pong",
-		},
+			HelpText:    "`{PREFIX}ping`"},
 	)
 }
 

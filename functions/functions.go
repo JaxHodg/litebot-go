@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
@@ -142,4 +143,42 @@ func CanSpeak(session *discordgo.Session, channelID string) bool {
 		return true
 	}
 	return false
+}
+
+func ExtractUserID(text string) string {
+	re := regexp.MustCompile(`[<][@](\d*)[>]`)
+	substring := re.FindStringSubmatch(text)
+
+	if len(substring) != 0 {
+		return substring[1]
+	} else {
+		return ""
+	}
+}
+
+func ExtractChannelID(text string) string {
+	re := regexp.MustCompile(`<#(\d*)>`)
+	substring := re.FindStringSubmatch(text)
+
+	if len(substring) != 0 {
+		return substring[1]
+	} else {
+		return ""
+	}
+}
+
+func ExtractMessageID(text string) string {
+	re := regexp.MustCompile(`https:\/\/discord\.com\/channels\/\d+\/\d+\/(\d+)`)
+	substring := re.FindStringSubmatch(text)
+
+	if len(substring) != 0 {
+		return substring[1]
+	} else {
+		return ""
+	}
+}
+
+func ValidateUserID(session *discordgo.Session, userID string) bool {
+	_, err := session.User(userID)
+	return err == nil
 }

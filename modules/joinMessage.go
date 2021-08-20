@@ -2,7 +2,6 @@ package modules
 
 import (
 	"log"
-	"regexp"
 	"strings"
 
 	"github.com/JaxHodg/litebot-go/functions"
@@ -21,14 +20,14 @@ func init() {
 	)
 	manager.RegisterVariable(
 		&manager.Variable{
-			Name:         "Message",
+			Name:         "JoinMessage",
 			ModuleName:   "JoinMessage",
 			DefaultValue: "Welcome {user}",
 		},
 	)
 	manager.RegisterVariable(
 		&manager.Variable{
-			Name:         "Channel",
+			Name:         "JoinChannel",
 			ModuleName:   "JoinMessage",
 			DefaultValue: "",
 		},
@@ -37,43 +36,30 @@ func init() {
 
 // JoinMessage announces when a user joins the guild
 func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
-	isEnabled, err := state.GetEnabled(event.GuildID, "JoinMessage")
-
-	if err != nil || !isEnabled {
+	// Checks if JoinMessage is enabled
+	if isEnabled, _ := state.GetEnabled(event.GuildID, "JoinMessage"); !isEnabled {
 		return
 	}
-
-	re := regexp.MustCompile(`<#(\d*)>`)
-
-	joinChannel, err := state.GetData(event.GuildID, "JoinMessage", "joinchannel")
+	// Gets the the channelID for the server
+	joinChannel, err := state.GetData(event.GuildID, "JoinMessage", "JoinChannel")
 	if err != nil {
 		return
 	}
-	submatch := re.FindStringSubmatch(joinChannel)
-	if len(submatch) == 0 {
-		return
-	}
-	channelID := submatch[1]
+	channelID := functions.ExtractChannelID(joinChannel)
 
-	_, err = session.Channel(channelID)
-	if err != nil {
+	// Checks if the channel works, probably not needed
+	if _, err := session.Channel(channelID); err != nil {
 		log.Println(err)
 		return
 	}
 
-	message, err := state.GetData(event.GuildID, "JoinMessage", "JoinMessage")
-	if err != nil {
-		return
-	}
-
+	// Gets the set message
+	message, _ := state.GetData(event.GuildID, "JoinMessage", "JoinMessage")
 	message = strings.ReplaceAll(message, "{user}", event.Mention())
 
+	// Sends the message
 	response := functions.NewGenericEmbed("New Member", message)
-
-	if response != nil {
-		_, err := session.ChannelMessageSendEmbed(channelID, response)
-		if err != nil {
-			log.Println(err)
-		}
+	if _, err = session.ChannelMessageSendEmbed(channelID, response); err != nil {
+		log.Println(err)
 	}
 }

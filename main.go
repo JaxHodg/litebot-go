@@ -53,7 +53,7 @@ func main() {
 		return
 	}
 	state.InitDB()
-	state.MigrateDB()
+	//state.MigrateDB()
 
 	fmt.Println("Lite-bot is now running.  Press CTRL-C to exit.")
 

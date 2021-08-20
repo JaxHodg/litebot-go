@@ -31,15 +31,14 @@ func cmdDisable(args []string, session *discordgo.Session, event *discordgo.Mess
 
 	if !manager.IsValidModule(moduleId) && !manager.IsValidCommand(moduleId) {
 		return functions.NewErrorEmbed(moduleId + " is not a valid Module")
-	} else if !manager.IsValidModule(moduleId) {
+	} else if !manager.IsValidVariable(moduleId, "enabled") {
 		return functions.NewErrorEmbed(moduleId + " cannot be disabled")
 	}
 	module, err := manager.GetModule(moduleId)
 	if err != nil {
 		return functions.NewErrorEmbed("Unable to disable " + moduleId)
 	}
-	isEnabled, err := state.GetEnabled(event.Message.GuildID, moduleId)
-	if err == nil && !isEnabled {
+	if isEnabled, _ := state.GetEnabled(event.Message.GuildID, moduleId); !isEnabled {
 		return functions.NewGenericEmbed("Disabled", module.Name+" is already disabled")
 	}
 

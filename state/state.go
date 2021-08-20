@@ -38,6 +38,8 @@ func StopDB() {
 }
 
 func GetEnabled(guildID string, moduleID string) (bool, error) {
+	moduleID = strings.ToLower(moduleID)
+
 	if !manager.IsValidModule(moduleID) {
 		return false, errors.New("invalid module")
 	}
@@ -66,12 +68,13 @@ func GetEnabled(guildID string, moduleID string) (bool, error) {
 	if !ok {
 		return defaultValue, errors.New("firestore error")
 	}
-
 	return enabled, nil
 }
 
 func EnableModule(guildID string, moduleID string) {
-	if !manager.IsValidModule(moduleID) {
+	moduleID = strings.ToLower(moduleID)
+
+	if !manager.IsValidVariable(moduleID, "enabled") {
 		return
 	}
 	_, err := client.Collection("guilds").Doc(guildID).Set(ctx, map[string]interface{}{
@@ -86,7 +89,9 @@ func EnableModule(guildID string, moduleID string) {
 }
 
 func DisableModule(guildID string, moduleID string) {
-	if !manager.IsValidModule(moduleID) {
+	moduleID = strings.ToLower(moduleID)
+
+	if !manager.IsValidVariable(moduleID, "enabled") {
 		return
 	}
 	_, err := client.Collection("guilds").Doc(guildID).Set(ctx, map[string]interface{}{

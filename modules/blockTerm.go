@@ -43,25 +43,23 @@ func BlockTerm(session *discordgo.Session, message *discordgo.Message) {
 	if isAdmin {
 		return
 	}
-	list, err := state.GetList(message.GuildID, "BlockTerm", "BlockedTerms")
-	if err == nil {
-		for _, s := range list {
-			if strings.Contains(strings.ToLower(message.Content), s) {
-				err := session.ChannelMessageDelete(message.ChannelID, message.ID)
-				if err != nil {
-					log.Println(err)
-				}
-				pm, err := session.UserChannelCreate(message.Author.ID)
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				_, err = session.ChannelMessageSendEmbed(pm.ID, functions.NewGenericEmbed("Message Blocked", "Your message: ```"+message.Content+"``` was blocked because it contained a blocked term"))
-				if err != nil {
-					log.Println(err)
-				}
+	list, _ := state.GetList(message.GuildID, "BlockTerm", "BlockedTerms")
+	for _, s := range list {
+		if strings.Contains(strings.ToLower(message.Content), s) {
+			err := session.ChannelMessageDelete(message.ChannelID, message.ID)
+			if err != nil {
+				log.Println(err)
+			}
+			pm, err := session.UserChannelCreate(message.Author.ID)
+			if err != nil {
+				log.Println(err)
 				return
 			}
+			_, err = session.ChannelMessageSendEmbed(pm.ID, functions.NewGenericEmbed("Message Blocked", "Your message: ```"+message.Content+"``` was blocked because it contained a blocked term"))
+			if err != nil {
+				log.Println(err)
+			}
+			return
 		}
 	}
 }

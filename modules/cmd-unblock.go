@@ -23,8 +23,14 @@ func init() {
 }
 
 func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	data := strings.Join(args, " ")
-	if len(args) == 0 {
+	term := ""
+	if len(args) >= 1 {
+		term = strings.Join(args, " ")
+		term = strings.TrimSpace(term)
+		term = strings.ToLower(term)
+	}
+
+	if term == "" {
 		pm, err := session.UserChannelCreate(event.Message.Author.ID)
 		if err != nil {
 			log.Println(err)
@@ -53,16 +59,13 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 		}
 		return functions.NewGenericEmbed("Blocked Terms", "Check your DMs for a list of blocked terms")
 	}
-	list, err := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
-	if err != nil {
-		log.Println(err)
-		return functions.NewErrorEmbed("Error getting blocked terms")
-	}
-	pos := functions.Find(list, data)
+	list, _ := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
+
+	pos := functions.Find(list, term)
 	if pos < 0 {
-		return functions.NewErrorEmbed("`" + data + "` is not currently blocked")
+		return functions.NewErrorEmbed("`" + term + "` is not currently blocked")
 	}
 
-	state.RemoveToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", data)
-	return functions.NewGenericEmbed("BlockedTerms", "Successfully unblocked `"+data+"`")
+	state.RemoveToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", term)
+	return functions.NewGenericEmbed("BlockedTerms", "Successfully unblocked `"+term+"`")
 }

@@ -19,7 +19,6 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 	prefix, _ := state.GetData(event.GuildID, "Prefix", "Prefix")
 
 	re := regexp.MustCompile("[" + prefix + "](\\w*)")
-
 	if !re.MatchString(event.Message.Content) {
 		return
 	}
@@ -31,20 +30,19 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if err != nil {
 		return
 	}
-	if err == nil {
-		enabled, err := state.GetEnabled(event.GuildID, command.ModuleName)
-		if err == nil && !enabled {
-			_, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed(commandName+" is disabled"))
-			if err != nil {
-				log.Println(err)
-			}
-			return
+
+	enabled, _ := state.GetEnabled(event.GuildID, command.ModuleName)
+	canBeEnabled := manager.IsValidVariable(command.ModuleName, "enabled")
+
+	if !enabled && canBeEnabled {
+		if _, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed(commandName+" is disabled")); err != nil {
+			log.Println(err)
 		}
+		return
 	}
 	if command.RequiredPermissions != 0 {
 		if permissionsAllowed, isAdmin, err := functions.MemberHasPermission(session, event.Message, command.RequiredPermissions); !permissionsAllowed && !isAdmin || err != nil {
-			_, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+commandName))
-			if err != nil {
+			if _, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+commandName)); err != nil {
 				log.Println(err)
 			}
 			return
@@ -54,8 +52,7 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if response == nil {
 		return
 	}
-	_, err = session.ChannelMessageSendEmbed(event.ChannelID, response)
-	if err != nil {
+	if _, err = session.ChannelMessageSendEmbed(event.ChannelID, response); err != nil {
 		log.Println(err)
 	}
 }

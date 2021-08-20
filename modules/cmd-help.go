@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/JaxHodg/litebot-go/manager"
+	"github.com/JaxHodg/litebot-go/state"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -21,12 +22,10 @@ func cmdHelp(args []string, session *discordgo.Session, event *discordgo.Message
 	helpEmbed := &discordgo.MessageEmbed{}
 	helpEmbed.Color = 0xEBCB8B
 
-	var commandName string
+	commandName := ""
 
-	if len(args) != 0 {
+	if len(args) >= 1 {
 		commandName = strings.ToLower(args[0])
-	} else {
-		commandName = ""
 	}
 
 	if command, exists := manager.Commands[commandName]; exists {
@@ -35,7 +34,17 @@ func cmdHelp(args []string, session *discordgo.Session, event *discordgo.Message
 		helpEmbed.Fields = []*discordgo.MessageEmbedField{
 			{
 				Name:  "Description",
-				Value: command.Description},
+				Value: command.Description,
+			},
+		}
+		if command.HelpText != "" {
+			HelpText := command.HelpText
+			prefix, _ := state.GetData(event.GuildID, "Prefix", "Prefix")
+			HelpText = strings.ReplaceAll(HelpText, "{PREFIX}", prefix)
+			helpEmbed.Fields = append(helpEmbed.Fields, &discordgo.MessageEmbedField{
+				Name:  "Examples",
+				Value: HelpText,
+			})
 		}
 	} else {
 		helpEmbed.Title = "Help"
@@ -43,7 +52,7 @@ func cmdHelp(args []string, session *discordgo.Session, event *discordgo.Message
 		helpEmbed.Fields = make([]*discordgo.MessageEmbedField, len(manager.Commands))
 
 		i := 0
-		for _, commandID := range []string{"help", "kick", "ban", "ping", "purge", "spoiler", "enable", "disable", "block", "unblock", "set"} {
+		for _, commandID := range manager.ListCommands() {
 			command, _ := manager.GetCommand(commandID)
 			helpEmbed.Fields[i] = &discordgo.MessageEmbedField{Name: command.Name, Value: command.Description}
 			i++

@@ -18,6 +18,7 @@ type Command struct {
 
 	Function    func([]string, *discordgo.Session, *discordgo.MessageCreate) *discordgo.MessageEmbed
 	Description string
+	HelpText    string
 
 	GuildOnly           bool
 	RequiredPermissions int64
