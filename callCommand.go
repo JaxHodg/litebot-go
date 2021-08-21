@@ -34,7 +34,7 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 	enabled, _ := state.GetEnabled(event.GuildID, command.ModuleName)
 	canBeEnabled := manager.IsValidVariable(command.ModuleName, "enabled")
 	if !enabled && canBeEnabled {
-		if _, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed(commandName+" is disabled")); err != nil {
+		if _, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed(command.Name+" is disabled")); err != nil {
 			log.Println(err)
 		}
 		return
@@ -42,7 +42,7 @@ func CallCommand(session *discordgo.Session, event *discordgo.MessageCreate) {
 
 	if command.RequiredPermissions != 0 {
 		if permissionsAllowed, isAdmin, err := functions.MemberHasPermission(session, event.Message, command.RequiredPermissions); !permissionsAllowed && !isAdmin || err != nil {
-			if _, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+commandName)); err != nil {
+			if _, err := session.ChannelMessageSendEmbed(event.ChannelID, functions.NewErrorEmbed("You do not have the required permissions to use "+command.Name)); err != nil {
 				log.Println(err)
 			}
 			return

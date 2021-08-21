@@ -54,11 +54,15 @@ func cmdHelp(args []string, session *discordgo.Session, event *discordgo.Message
 		helpEmbed.Fields = make([]*discordgo.MessageEmbedField, len(manager.Commands))
 
 		i := 0
-		for _, commandID := range manager.ListCommands() {
+		for _, commandID := range []string{"help", "kick", "ban", "purge", "spoiler", "ping", "prefix", "joinmessage", "leavemessage", "block", "unblock", "enable", "disable"} /**manager.ListCommands()**/ {
 			command, _ := manager.GetCommand(commandID)
 			helpEmbed.Fields[i] = &discordgo.MessageEmbedField{Name: command.Name, Value: command.Description}
 			i++
 		}
+		helpEmbed.Fields = append(helpEmbed.Fields, &discordgo.MessageEmbedField{
+			Name:  "---------Get Support---------",
+			Value: "Join the official support server [here](https://discord.gg/DSuy3CB)",
+		})
 	}
 	return helpEmbed
 }

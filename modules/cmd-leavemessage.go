@@ -36,7 +36,7 @@ func cmdLeaveMessage(args []string, session *discordgo.Session, event *discordgo
 		message = strings.TrimSpace(message)
 	}
 	if channelID == "" {
-		return functions.NewErrorEmbed("The first argument must be the channel")
+		return functions.NewErrorEmbed("You must specify a channel for the messages")
 	}
 
 	if _, err := session.Channel(channelID); err != nil {
