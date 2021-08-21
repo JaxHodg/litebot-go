@@ -30,6 +30,10 @@ func init() {
 
 // BlockTerm checks if message contains any blocked terms
 func BlockTerm(session *discordgo.Session, message *discordgo.Message) {
+	if isEnabled, _ := state.GetEnabled(message.GuildID, "BlockTerm"); !isEnabled {
+		return
+	}
+
 	if message.Member == nil {
 		return
 	}

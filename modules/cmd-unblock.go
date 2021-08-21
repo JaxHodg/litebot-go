@@ -33,7 +33,7 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 		term = functions.NormaliseString(term)
 		term = strings.ToLower(term)
 	}
-
+	enabled, _ := state.GetEnabled(event.GuildID, "BlockTerm")
 	if term == "" {
 		pm, err := session.UserChannelCreate(event.Message.Author.ID)
 		if err != nil {
@@ -61,15 +61,15 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 		if err != nil {
 			log.Println(err)
 		}
-		return functions.NewGenericEmbed("Blocked Terms", "Check your DMs for a list of blocked terms")
+		return functions.NewModuleGenericEmbed("Blocked Terms", "Check your DMs for a list of blocked terms", "BlockTerm", enabled)
 	}
 	list, _ := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
 
 	pos := functions.Find(list, term)
 	if pos < 0 {
-		return functions.NewErrorEmbed("`" + term + "` is not currently blocked")
+		return functions.NewModuleGenericEmbed("Blocked Terms", "`"+term+"` is not currently blocked", "BlockTerm", enabled)
 	}
 
 	state.RemoveToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", term)
-	return functions.NewGenericEmbed("BlockedTerms", "Successfully unblocked `"+term+"`")
+	return functions.NewModuleGenericEmbed("Blocked Terms", "Successfully unblocked `"+term+"`", "BlockTerm", enabled)
 }

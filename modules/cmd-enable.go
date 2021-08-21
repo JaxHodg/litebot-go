@@ -27,7 +27,7 @@ func init() {
 
 func cmdEnable(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
 	if len(args) == 0 {
-		return functions.NewErrorEmbed("You must specify a command")
+		return functions.NewGenericEmbed("Enable", "You may enable any of the following modules: `"+strings.Join(manager.ListEnableable(), "`, `")+"`")
 	}
 
 	moduleId := strings.ToLower(args[0])

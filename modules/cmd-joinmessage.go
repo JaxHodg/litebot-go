@@ -13,8 +13,7 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:       "JoinMessage",
-			ModuleName: "JoinMessage",
+			Name: "JoinMessage",
 
 			Function:    cmdJoinMessage,
 			Description: "Configures messages when users join",
@@ -48,9 +47,11 @@ func cmdJoinMessage(args []string, session *discordgo.Session, event *discordgo.
 	}
 
 	state.SetData(event.GuildID, "JoinMessage", "JoinChannel", args[0])
+	enabled, _ := state.GetEnabled(event.GuildID, "JoinMessage")
+
 	if message == "" {
-		return functions.NewGenericEmbed("Set JoinMessage Channel", "Successfully set the JoinMessage channel to "+args[0]+"\nTip: You can also put a custom message after the channel")
+		return functions.NewModuleGenericEmbed("Set JoinMessage Channel", "Successfully set the JoinMessage channel to "+args[0]+"\nTip: You can also put a custom message after the channel", "JoinMessage", enabled)
 	}
 	state.SetData(event.GuildID, "JoinMessage", "JoinMessage", message)
-	return functions.NewGenericEmbed("Set JoinMessage Channel", "Successfully set the JoinMessage channel to "+args[0]+" and the message to:\n```"+message+"```")
+	return functions.NewModuleGenericEmbed("Set JoinMessage Channel", "Successfully set the JoinMessage channel to "+args[0]+" and the message to:\n```"+message+"```", "JoinMessage", enabled)
 }

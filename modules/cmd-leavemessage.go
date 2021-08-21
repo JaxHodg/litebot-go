@@ -13,8 +13,7 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:       "LeaveMessage",
-			ModuleName: "LeaveMessage",
+			Name: "LeaveMessage",
 
 			Function:    cmdLeaveMessage,
 			Description: "Configures messages when users leave",
@@ -47,9 +46,11 @@ func cmdLeaveMessage(args []string, session *discordgo.Session, event *discordgo
 	}
 
 	state.SetData(event.GuildID, "LeaveMessage", "LeaveChannel", args[0])
+	enabled, _ := state.GetEnabled(event.GuildID, "LeaveMessage")
+
 	if message == "" {
-		return functions.NewGenericEmbed("Set LeaveMessage Channel", "Successfully set the LeaveMessage channel to "+args[0]+"\nTip: You can also put a custom message after the channel")
+		return functions.NewModuleGenericEmbed("Set LeaveMessage Channel", "Successfully set the LeaveMessage channel to "+args[0]+"\nTip: You can also put a custom message after the channel", "LeaveMessage", enabled)
 	}
 	state.SetData(event.GuildID, "LeaveMessage", "LeaveMessage", message)
-	return functions.NewGenericEmbed("Set LeaveMessage Channel", "Successfully set the LeaveMessage channel to "+args[0]+" and the message to:\n```"+message+"```")
+	return functions.NewModuleGenericEmbed("Set LeaveMessage Channel", "Successfully set the LeaveMessage channel to "+args[0]+" and the message to:\n```"+message+"```", "LeaveMessage", enabled)
 }

@@ -50,3 +50,16 @@ func ListModules() []string {
 	})
 	return keys
 }
+
+func ListEnableable() []string {
+	keys := make([]string, 0, len(Modules))
+	for k := range Modules {
+		if IsValidVariable(k, "enabled") {
+			keys = append(keys, k)
+		}
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		return len(keys[i]) < len(keys[j])
+	})
+	return keys
+}

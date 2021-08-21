@@ -46,6 +46,20 @@ func NewGenericEmbed(embedTitle, embedMsg string) *discordgo.MessageEmbed {
 	return genericEmbed
 }
 
+func NewModuleGenericEmbed(embedTitle, embedMsg, moduleID string, enabled bool) *discordgo.MessageEmbed {
+	moduleGenericEmbed := &discordgo.MessageEmbed{}
+	moduleGenericEmbed.Title = embedTitle
+	moduleGenericEmbed.Description = embedMsg
+	moduleGenericEmbed.Color = 0xD8DEE9
+	moduleGenericEmbed.Footer = &discordgo.MessageEmbedFooter{
+		Text: moduleID + " Disabled",
+	}
+	if enabled {
+		moduleGenericEmbed.Footer.Text = moduleID + " Enabled"
+	}
+	return moduleGenericEmbed
+}
+
 //NewErrorEmbed returns an error embed
 func NewErrorEmbed(embedMsg string) *discordgo.MessageEmbed {
 	errorEmbed := &discordgo.MessageEmbed{}
