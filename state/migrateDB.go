@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"github.com/JaxHodg/litebot-go/functions"
 	"github.com/JaxHodg/litebot-go/manager"
 )
 
@@ -117,6 +118,14 @@ func MigrateDB() {
 				moduleID = "blockterm"
 				variableID = "blockedterms"
 			}
+			for i, j := range value {
+				term := j
+				term = strings.TrimSpace(term)
+				term = functions.NormaliseString(term)
+				term = strings.ToLower(term)
+				value[i] = term
+			}
+
 			fmt.Println(guildID + " " + moduleID)
 			if len(value) > 0 && manager.IsValidVariable(moduleID, variableID) {
 				_, err := client.Collection("guilds").Doc(guildID).Set(ctx, map[string]interface{}{

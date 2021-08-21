@@ -13,8 +13,7 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:       "Unblock",
-			ModuleName: "BlockTerm",
+			Name: "Unblock",
 
 			Function:    cmdUnblock,
 			Description: "Unblocks the specified term",
@@ -31,6 +30,7 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 	if len(args) >= 1 {
 		term = strings.Join(args, " ")
 		term = strings.TrimSpace(term)
+		term = functions.NormaliseString(term)
 		term = strings.ToLower(term)
 	}
 

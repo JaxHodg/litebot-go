@@ -13,8 +13,7 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:       "Block",
-			ModuleName: "BlockTerm",
+			Name: "Block",
 
 			Function:    cmdBlock,
 			Description: "Blocks the specified term",
@@ -31,6 +30,7 @@ func cmdBlock(args []string, session *discordgo.Session, event *discordgo.Messag
 	if len(args) >= 1 {
 		term = strings.Join(args, " ")
 		term = strings.TrimSpace(term)
+		term = functions.NormaliseString(term)
 		term = strings.ToLower(term)
 	}
 

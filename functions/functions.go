@@ -6,8 +6,11 @@ import (
 	"log"
 	"regexp"
 	"strconv"
+	"unicode"
 
 	"github.com/bwmarrin/discordgo"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 // MemberHasPermission returns whether a member has the requested permission and whether they have admin
@@ -181,4 +184,13 @@ func ExtractMessageID(text string) string {
 func ValidateUserID(session *discordgo.Session, userID string) bool {
 	_, err := session.User(userID)
 	return err == nil
+}
+
+func NormaliseString(text string) string {
+	isMn := func(r rune) bool {
+		return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+	}
+	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
+	result, _, _ := transform.String(t, text)
+	return result
 }

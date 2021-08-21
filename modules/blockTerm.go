@@ -42,8 +42,14 @@ func BlockTerm(session *discordgo.Session, message *discordgo.Message) {
 		return
 	}
 	list, _ := state.GetList(message.GuildID, "BlockTerm", "BlockedTerms")
+
+	text := message.Content
+	text = strings.TrimSpace(text)
+	text = functions.NormaliseString(text)
+	text = strings.ToLower(text)
+
 	for _, s := range list {
-		if strings.Contains(strings.ToLower(message.Content), s) {
+		if strings.Contains(text, s) {
 			err := session.ChannelMessageDelete(message.ChannelID, message.ID)
 			if err != nil {
 				log.Println(err)
@@ -53,7 +59,7 @@ func BlockTerm(session *discordgo.Session, message *discordgo.Message) {
 				log.Println(err)
 				return
 			}
-			_, err = session.ChannelMessageSendEmbed(pm.ID, functions.NewGenericEmbed("Message Blocked", "Your message: ```"+message.Content+"``` was blocked because it contained a blocked term"))
+			_, err = session.ChannelMessageSendEmbed(pm.ID, functions.NewGenericEmbed("Message Blocked", "Your message was removed because it contained a blocked term```"+message.Content+"```"))
 			if err != nil {
 				log.Println(err)
 			}
