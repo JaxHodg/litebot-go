@@ -13,9 +13,13 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "JoinMessage",
-			Function:            cmdJoinMessage,
-			Description:         "Configures messages when users join",
+			Name:       "JoinMessage",
+			ModuleName: "JoinMessage",
+
+			Function:    cmdJoinMessage,
+			Description: "Configures messages when users join",
+			HelpText:    "`{PREFIX}joinmessage #general`\nYou can also set a custom message that mentions the new user with {user}\n`{PREFIX}joinmessage #general Welcome {user}`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},

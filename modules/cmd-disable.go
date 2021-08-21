@@ -13,9 +13,12 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Disable",
-			Function:            cmdDisable,
-			Description:         "Disables the specified command",
+			Name: "Disable",
+
+			Function:    cmdDisable,
+			Description: "Disables the specified command",
+			HelpText:    "`{PREFIX}disable kick`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},

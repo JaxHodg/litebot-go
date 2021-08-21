@@ -11,7 +11,12 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("Purge", true)
+	manager.RegisterModule(
+		&manager.Module{
+			Name:        "Purge",
+			Description: "Deletes a specific number of messages",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:       "Purge",
@@ -25,12 +30,7 @@ func init() {
 			GuildOnly:           true,
 		},
 	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name:        "Purge",
-			Description: "Deletes a specific number of messages",
-		},
-	)
+	manager.RegisterEnable("Purge", true)
 }
 
 func cmdPurge(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {

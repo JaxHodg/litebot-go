@@ -10,11 +10,22 @@ import (
 )
 
 func init() {
+	manager.RegisterModule(
+		&manager.Module{
+			Name: "Prefix",
+
+			Description: "",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Prefix",
-			Function:            cmdPrefix,
-			Description:         "Configures the prefix",
+			Name:       "Prefix",
+			ModuleName: "Prefix",
+
+			Function:    cmdPrefix,
+			Description: "Configures the prefix",
+			HelpText:    "`{PREFIX}prefix !`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},
@@ -24,13 +35,6 @@ func init() {
 			Name:         "Prefix",
 			ModuleName:   "Prefix",
 			DefaultValue: "!",
-		},
-	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name: "Prefix",
-
-			Description: "",
 		},
 	)
 }

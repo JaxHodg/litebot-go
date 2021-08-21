@@ -13,9 +13,13 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Unblock",
-			Function:            cmdUnblock,
-			Description:         "Unblocks the specified term",
+			Name:       "Unblock",
+			ModuleName: "BlockTerm",
+
+			Function:    cmdUnblock,
+			Description: "Unblocks the specified term",
+			HelpText:    "`{PREFIX}unblock frick`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},

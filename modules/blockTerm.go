@@ -12,7 +12,6 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("BlockTerm", false)
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "BlockTerm",
@@ -21,13 +20,12 @@ func init() {
 	)
 	manager.RegisterVariable(
 		&manager.Variable{
-			Name: "BlockedTerms",
-
-			ModuleName: "BlockTerm",
-
+			Name:         "BlockedTerms",
+			ModuleName:   "BlockTerm",
 			DefaultValue: []string{},
 		},
 	)
+	manager.RegisterEnable("BlockTerm", false)
 }
 
 // BlockTerm checks if message contains any blocked terms

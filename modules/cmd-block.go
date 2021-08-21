@@ -13,10 +13,13 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name: "Block",
+			Name:       "Block",
+			ModuleName: "BlockTerm",
 
-			Function:            cmdBlock,
-			Description:         "Blocks the specified term",
+			Function:    cmdBlock,
+			Description: "Blocks the specified term",
+			HelpText:    "`{PREFIX}block frick`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},

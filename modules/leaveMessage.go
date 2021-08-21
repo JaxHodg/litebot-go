@@ -12,7 +12,6 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("LeaveMessage", false)
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "LeaveMessage",
@@ -33,6 +32,7 @@ func init() {
 			DefaultValue: "",
 		},
 	)
+	manager.RegisterEnable("LeaveMessage", false)
 }
 
 // LeaveMessage announces when a user leaves the guild

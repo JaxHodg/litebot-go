@@ -8,7 +8,12 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("Ban", true)
+	manager.RegisterModule(
+		&manager.Module{
+			Name:        "Ban",
+			Description: "Bans the user from the server",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:       "Ban",
@@ -22,12 +27,7 @@ func init() {
 			GuildOnly:           true,
 		},
 	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name:        "Ban",
-			Description: "Bans the user from the server",
-		},
-	)
+	manager.RegisterEnable("Ban", true)
 }
 
 func cmdBan(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {

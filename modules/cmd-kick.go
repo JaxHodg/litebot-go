@@ -7,7 +7,12 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("Kick", true)
+	manager.RegisterModule(
+		&manager.Module{
+			Name:        "Kick",
+			Description: "Kicks the user from the server",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:       "Kick",
@@ -21,12 +26,7 @@ func init() {
 			GuildOnly:           true,
 		},
 	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name:        "Kick",
-			Description: "Kicks the user from the server",
-		},
-	)
+	manager.RegisterEnable("Kick", true)
 }
 
 func cmdKick(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {

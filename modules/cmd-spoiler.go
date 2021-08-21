@@ -10,7 +10,12 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("Spoiler", true)
+	manager.RegisterModule(
+		&manager.Module{
+			Name:        "Spoiler",
+			Description: "Marks the previous message as a spoiler",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
 			Name:       "Spoiler",
@@ -24,12 +29,7 @@ func init() {
 			GuildOnly:           true,
 		},
 	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name:        "Spoiler",
-			Description: "Marks the previous message as a spoiler",
-		},
-	)
+	manager.RegisterEnable("Spoiler", true)
 }
 
 func cmdSpoiler(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {

@@ -13,9 +13,13 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "LeaveMessage",
-			Function:            cmdLeaveMessage,
-			Description:         "Configures messages when users leave",
+			Name:       "LeaveMessage",
+			ModuleName: "LeaveMessage",
+
+			Function:    cmdLeaveMessage,
+			Description: "Configures messages when users leave",
+			HelpText:    "`{PREFIX}leavemessage #general`\nYou can also set a custom message that mentions the new user with {user}\n`{PREFIX}leavemessage #general Welcome {user}`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},

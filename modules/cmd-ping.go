@@ -9,7 +9,8 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:        "Ping",
+			Name: "Ping",
+
 			Function:    cmdPing,
 			Description: "Pong",
 			HelpText:    "`{PREFIX}ping`"},

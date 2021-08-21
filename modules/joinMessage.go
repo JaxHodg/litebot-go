@@ -2,7 +2,7 @@ package modules
 
 import (
 	"log"
-	"strings"
+	"regexp"
 
 	"github.com/JaxHodg/litebot-go/functions"
 	"github.com/JaxHodg/litebot-go/manager"
@@ -11,7 +11,6 @@ import (
 )
 
 func init() {
-	manager.RegisterEnable("JoinMessage", false)
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "JoinMessage",
@@ -32,6 +31,7 @@ func init() {
 			DefaultValue: "",
 		},
 	)
+	manager.RegisterEnable("JoinMessage", false)
 }
 
 // JoinMessage announces when a user joins the guild
@@ -55,7 +55,8 @@ func JoinMessage(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
 
 	// Gets the set message
 	message, _ := state.GetData(event.GuildID, "JoinMessage", "JoinMessage")
-	message = strings.ReplaceAll(message, "{user}", event.Mention())
+	message = regexp.MustCompile(`(?i){user}`).ReplaceAllLiteralString(message, event.Mention())
+	//message = strings.ReplaceAll(message, "{user}", event.Mention())
 
 	// Sends the message
 	response := functions.NewGenericEmbed("New Member", message)

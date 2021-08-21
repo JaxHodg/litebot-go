@@ -11,9 +11,11 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:        "Help",
+			Name: "Help",
+
 			Function:    cmdHelp,
 			Description: "Lists all the available commands",
+			HelpText:    "`{PREFIX}help`\nYou can also get more help on specific commands:\n`{PREFIX}help kick`",
 		},
 	)
 }

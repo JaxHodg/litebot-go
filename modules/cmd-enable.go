@@ -13,9 +13,12 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Enable",
-			Function:            cmdEnable,
-			Description:         "Enables the specified command",
+			Name: "Enable",
+
+			Function:    cmdEnable,
+			Description: "Enables the specified command",
+			HelpText:    "`{PREFIX}enable kick`",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},
