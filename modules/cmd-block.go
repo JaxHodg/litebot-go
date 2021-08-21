@@ -17,7 +17,7 @@ func init() {
 
 			Function:    cmdBlock,
 			Description: "Blocks the specified term",
-			HelpText:    "`{PREFIX}block frick`",
+			HelpText:    "`{PREFIX}block frick`\nTip: Admin messages won't be blocked",
 
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,

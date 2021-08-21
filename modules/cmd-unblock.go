@@ -17,7 +17,7 @@ func init() {
 
 			Function:    cmdUnblock,
 			Description: "Unblocks the specified term",
-			HelpText:    "`{PREFIX}unblock frick`",
+			HelpText:    "`{PREFIX}unblock frick`\nYou can also get a list of blocked terms\n`{PREFIX}unblock`",
 
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
