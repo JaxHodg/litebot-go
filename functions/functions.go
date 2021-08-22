@@ -163,7 +163,7 @@ func CanSpeak(session *discordgo.Session, channelID string) bool {
 }
 
 func ExtractUserID(text string) string {
-	re := regexp.MustCompile(`[<][@](\d*)[>]`)
+	re := regexp.MustCompile(`<@!?(\d*)>`)
 	substring := re.FindStringSubmatch(text)
 
 	if len(substring) != 0 {
