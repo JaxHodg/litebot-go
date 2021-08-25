@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -40,6 +41,7 @@ func DiscordMessageUpdate(session *discordgo.Session, event *discordgo.MessageUp
 }
 
 func DiscordConnect(session *discordgo.Session, event *discordgo.Connect) {
+	time.Sleep(1 * time.Second)
 	functions.UpdateStatus(session)
 }
 
