@@ -41,9 +41,9 @@ func cmdUnblock(args []string, session *discordgo.Session, event *discordgo.Mess
 			return functions.NewErrorEmbed("Unable to send a DM containing blocked terms")
 		}
 		blockedList, err := state.GetList(event.Message.GuildID, "BlockTerm", "BlockedTerms")
-		if err != nil {
+		if len(blockedList) == 0 {
 			log.Println(err)
-			return functions.NewErrorEmbed("Unable to send a DM containing blocked terms")
+			return functions.NewModuleGenericEmbed("BlockTerm", "No terms are currently blocked", "BlockedTerms", enabled)
 		}
 
 		embed := &discordgo.MessageEmbed{}

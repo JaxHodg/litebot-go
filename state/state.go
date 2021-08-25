@@ -83,7 +83,6 @@ func EnableModule(guildID string, moduleID string) {
 		},
 	}, firestore.MergeAll)
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 }
@@ -100,7 +99,6 @@ func DisableModule(guildID string, moduleID string) {
 		},
 	}, firestore.MergeAll)
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 }
@@ -148,7 +146,6 @@ func SetData(guildID string, moduleID string, variableID string, value string) {
 	}, firestore.MergeAll)
 
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 }
@@ -195,12 +192,13 @@ func AddToList(guildID string, moduleID string, variableID string, value string)
 		return
 	}
 
-	_, err := client.Collection("guilds").Doc(guildID).Update(ctx, []firestore.Update{
-		{Path: moduleID + "." + variableID, Value: firestore.ArrayUnion(value)},
-	})
+	_, err := client.Collection("guilds").Doc(guildID).Set(ctx, map[string]interface{}{
+		moduleID: map[string]interface{}{
+			variableID: firestore.ArrayUnion(value),
+		},
+	}, firestore.MergeAll)
 
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 }
@@ -213,12 +211,13 @@ func RemoveToList(guildID string, moduleID string, variableID string, value stri
 		return
 	}
 
-	_, err := client.Collection("guilds").Doc(guildID).Update(ctx, []firestore.Update{
-		{Path: moduleID + "." + variableID, Value: firestore.ArrayRemove(value)},
-	})
+	_, err := client.Collection("guilds").Doc(guildID).Set(ctx, map[string]interface{}{
+		moduleID: map[string]interface{}{
+			variableID: firestore.ArrayRemove(value),
+		},
+	}, firestore.MergeAll)
 
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 }
