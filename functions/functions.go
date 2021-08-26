@@ -18,7 +18,7 @@ func MemberHasPermission(session *discordgo.Session, message *discordgo.Message,
 	if message.Member == nil {
 		return false, false, errors.New("nil member")
 	}
-	userPerm, err := session.UserChannelPermissions(message.Author.ID, message.ChannelID)
+	userPerm, err := session.State.UserChannelPermissions(message.Author.ID, message.ChannelID)
 	if err != nil {
 		fmt.Println(err)
 		//return false, false, err
