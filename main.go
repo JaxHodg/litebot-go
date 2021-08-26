@@ -1,34 +1,40 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/JaxHodg/litebot-go/state"
+	"github.com/joho/godotenv"
 
 	"github.com/bwmarrin/discordgo"
+
+	"github.com/JaxHodg/litebot-go/state"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	file, err := os.Open("./key.config")
-	if err != nil {
-		os.Create("./key.config")
-		fmt.Println("Place the key in key.config")
-		os.Exit(0)
-	}
-	key, err := ioutil.ReadAll(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	key = bytes.TrimSuffix(key, []byte{'\n'})
 
-	dg, err := discordgo.New("Bot " + string(key))
+	godotenv.Load()
+
+	discordToken := os.Getenv("DISCORD_TOKEN")
+
+	/**
+	file, err := os.Open("./key.config")
+		if err != nil {
+			os.Create("./key.config")
+			fmt.Println("Place the key in key.config")
+			os.Exit(0)
+		}
+		key, err := ioutil.ReadAll(file)
+		if err != nil {
+			log.Fatal(err)
+		}
+		key = bytes.TrimSuffix(key, []byte{'\n'})
+	**/
+	dg, err := discordgo.New("Bot " + string(discordToken))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +52,8 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	state.InitState()
+	state.InitDB()
+	//state.MigrateDB()
 
 	fmt.Println("Lite-bot is now running.  Press CTRL-C to exit.")
 
@@ -54,6 +61,7 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
+	state.StopDB()
 	// Cleanly close down the Discord session.
 	dg.Close()
 }

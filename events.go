@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -18,10 +19,7 @@ func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 	if event.Message.Content == "<@!405829095054770187>" {
 		if functions.CanSpeak(session, event.Message.ChannelID) {
 
-			prefix := state.CheckData(event.GuildID, "prefix")
-			if prefix == "" {
-				prefix = "!"
-			}
+			prefix, _ := state.GetData(event.GuildID, "Prefix", "Prefix")
 
 			_, err := session.ChannelMessageSendEmbed(event.Message.ChannelID, functions.NewGenericEmbed("Litebot", "Hi, I'm litebot. My prefix is `"+prefix+"`"))
 			if err != nil {
@@ -29,22 +27,21 @@ func DiscordMessageCreate(session *discordgo.Session, event *discordgo.MessageCr
 			}
 		}
 	}
-	modules.BlockMessage(session, event.Message)
-
+	modules.BlockTerm(session, event.Message)
 	if functions.CanSpeak(session, event.Message.ChannelID) {
 		CallCommand(session, event)
 	}
-
 }
 
 func DiscordMessageUpdate(session *discordgo.Session, event *discordgo.MessageUpdate) {
 	if !functions.VerifyMessage(session, event.Message) {
 		return //Error with message details
 	}
-	modules.BlockMessage(session, event.Message)
+	modules.BlockTerm(session, event.Message)
 }
 
 func DiscordConnect(session *discordgo.Session, event *discordgo.Connect) {
+	time.Sleep(1 * time.Second)
 	functions.UpdateStatus(session)
 }
 
@@ -56,6 +53,9 @@ func DiscordGuildMemberAdd(session *discordgo.Session, event *discordgo.GuildMem
 
 // DiscordGuildMemberRemove handles a user leaving the server
 func DiscordGuildMemberRemove(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
+	if event.Member.User.ID == session.State.User.ID {
+		state.RemoveGuild(event.GuildID)
+	}
 	modules.LeaveMessage(session, event)
 	functions.UpdateStatus(session)
 }

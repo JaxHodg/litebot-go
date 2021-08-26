@@ -1,8 +1,6 @@
 package modules
 
 import (
-	"regexp"
-
 	"github.com/bwmarrin/discordgo"
 
 	"github.com/JaxHodg/litebot-go/functions"
@@ -10,46 +8,45 @@ import (
 )
 
 func init() {
+	manager.RegisterModule(
+		&manager.Module{
+			Name:        "Ban",
+			Description: "Bans the user from the server",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Ban",
-			Function:            cmdBan,
-			Description:         "Bans the mentioned user",
+			Name:       "Ban",
+			ModuleName: "Ban",
+
+			Function:    cmdBan,
+			Description: "Bans the user from the server",
+			HelpText:    "`{PREFIX}ban @user#1234`",
+
 			RequiredPermissions: discordgo.PermissionBanMembers,
 			GuildOnly:           true,
 		},
 	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name:        "Ban",
-			Description: "Bans the mentioned user",
-		},
-	)
+	manager.RegisterEnable("Ban", true)
 }
 
 func cmdBan(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	if len(args) == 0 {
-		return functions.NewErrorEmbed("You must specify a user")
+	userID := ""
+	if len(args) >= 1 {
+		userID = functions.ExtractUserID(args[0])
 	}
 
-	re := regexp.MustCompile(`[<][@](\d*)[>]`)
-	substring := re.FindStringSubmatch(args[0])
-
-	if len(substring) == 0 {
-		return functions.NewErrorEmbed("You must specify a user")
+	if userID == "" {
+		return functions.NewErrorEmbed("You must specify a user to ban")
 	}
 
-	userID := substring[1]
-
-	user, err := session.GuildMember(event.Message.GuildID, userID)
-	if err != nil {
+	if _, err := session.GuildMember(event.Message.GuildID, userID); err != nil {
 		return functions.NewErrorEmbed("Invalid user")
 	}
 
-	err = session.GuildBanCreate(event.Message.GuildID, userID, 0)
-	if err != nil {
+	if err := session.GuildBanCreate(event.Message.GuildID, userID, 0); err != nil {
 		return functions.NewErrorEmbed("Unable to ban user")
 	}
 
-	return functions.NewGenericEmbed("Ban", "Banned  "+user.Mention())
+	return functions.NewGenericEmbed("Ban", "Banned  "+args[0])
 }

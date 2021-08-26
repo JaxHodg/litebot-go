@@ -2,7 +2,6 @@ package modules
 
 import (
 	"log"
-	"regexp"
 	"strings"
 
 	"github.com/JaxHodg/litebot-go/functions"
@@ -11,21 +10,26 @@ import (
 )
 
 func init() {
-	manager.RegisterCommand(
-		&manager.Command{
-			Name:                "Spoiler",
-			Function:            cmdSpoiler,
-			Description:         "Marks the previous message as a spoiler",
-			RequiredPermissions: discordgo.PermissionManageMessages,
-			GuildOnly:           true,
-		},
-	)
 	manager.RegisterModule(
 		&manager.Module{
 			Name:        "Spoiler",
 			Description: "Marks the previous message as a spoiler",
 		},
 	)
+	manager.RegisterCommand(
+		&manager.Command{
+			Name:       "Spoiler",
+			ModuleName: "Spoiler",
+
+			Function:    cmdSpoiler,
+			Description: "Marks the previous message as a spoiler",
+			HelpText:    "`{PREFIX}spoiler`\nYou can also mark a specific message as a spoiler using its link\n`{PREFIX}spoiler https://discord.com/channels/123456789/123456789/123456789`",
+
+			RequiredPermissions: discordgo.PermissionManageMessages,
+			GuildOnly:           true,
+		},
+	)
+	manager.RegisterEnable("Spoiler", true)
 }
 
 func cmdSpoiler(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
@@ -37,14 +41,7 @@ func cmdSpoiler(args []string, session *discordgo.Session, event *discordgo.Mess
 		}
 		spoilMessage = messages[1]
 	} else if len(args) == 1 {
-		re := regexp.MustCompile(`https:\/\/discord\.com\/channels\/\d+\/\d+\/(\d+)`)
-		substring := re.FindStringSubmatch(args[0])
-
-		if len(substring) == 0 {
-			return functions.NewErrorEmbed("You must specify a message")
-		}
-
-		messageID := substring[1]
+		messageID := functions.ExtractMessageID(args[0])
 
 		message, err := session.ChannelMessage(event.Message.ChannelID, messageID)
 		if err != nil {

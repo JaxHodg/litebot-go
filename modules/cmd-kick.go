@@ -1,54 +1,51 @@
 package modules
 
 import (
-	"regexp"
-
 	"github.com/JaxHodg/litebot-go/functions"
 	"github.com/JaxHodg/litebot-go/manager"
 	"github.com/bwmarrin/discordgo"
 )
 
 func init() {
+	manager.RegisterModule(
+		&manager.Module{
+			Name:        "Kick",
+			Description: "Kicks the user from the server",
+		},
+	)
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Kick",
-			Function:            cmdKick,
-			Description:         "Kicks the mentioned user",
+			Name:       "Kick",
+			ModuleName: "Kick",
+
+			Function:    cmdKick,
+			Description: "Kicks the user from the server",
+			HelpText:    "`{PREFIX}kick @user#1234`",
+
 			RequiredPermissions: discordgo.PermissionKickMembers,
 			GuildOnly:           true,
 		},
 	)
-	manager.RegisterModule(
-		&manager.Module{
-			Name:        "Kick",
-			Description: "Kicks the mentioned user",
-		},
-	)
+	manager.RegisterEnable("Kick", true)
 }
 
 func cmdKick(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	if len(args) == 0 {
-		return functions.NewErrorEmbed("You must specify a user")
+	userID := ""
+	if len(args) >= 1 {
+		userID = functions.ExtractUserID(args[0])
 	}
 
-	re := regexp.MustCompile(`[<][@](\d*)[>]`)
-	substring := re.FindStringSubmatch(args[0])
-
-	if len(substring) == 0 {
-		return functions.NewErrorEmbed("You must specify a user")
+	if userID == "" {
+		return functions.NewErrorEmbed("You must specify a user to kick")
 	}
 
-	userID := substring[1]
-
-	user, err := session.GuildMember(event.Message.GuildID, userID)
-	if err != nil {
+	if _, err := session.GuildMember(event.Message.GuildID, userID); err != nil {
 		return functions.NewErrorEmbed("Invalid user")
 	}
 
-	err = session.GuildMemberDelete(event.Message.GuildID, userID)
-	if err != nil {
+	if err := session.GuildMemberDelete(event.Message.GuildID, userID); err != nil {
 		return functions.NewErrorEmbed("Unable to kick user")
 	}
 
-	return functions.NewGenericEmbed("Kick", "Kicked "+user.Mention())
+	return functions.NewGenericEmbed("Kick", "Kicked  "+args[0])
 }

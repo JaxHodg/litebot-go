@@ -9,10 +9,11 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:        "Ping",
+			Name: "Ping",
+
 			Function:    cmdPing,
-			Description: "Displays the current ping",
-		},
+			Description: "Pong",
+			HelpText:    "`{PREFIX}ping`"},
 	)
 }
 

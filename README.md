@@ -1,71 +1,78 @@
 # litebot
-Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, and purge, and blocking words. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are on the way.
+
+Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, purge, and blocking words. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are on the way.
 
 ## TODO
-- Improve/Migrate Database
-    - Clear all settings when leaving server
+
 - Move other's messages
-    -!move #other-channel to move the message in the new channel
+  -!move #other-channel to move the message in the new channel
 - WWE Intro Music
-    - Users can set a music clip that will play when they join the voice channel
-    - Probably really annoying so limit clip length and/or number of daily plays
+  - Users can set a music clip that will play when they join the voice channel
+  - Probably really annoying so limit clip length and/or number of daily plays
 - Queue system
-    - Useful for games like Among us or Animal Crossing where limited lobby size
+  - Useful for games like Among us or Animal Crossing where limited lobby size
 - React for role system
-    - Useful for big servers
-- More user friendly
-    - Give users more information with !help
-    - Add more tips and other useful information
+  - Useful for big servers
 - Fix DMs
-    - Not really necessary right now
-    - Can't process DMs because it can't determine what Guild the message is from
+  - Not really necessary right now
+  - Can't process DMs because it can't determine what Guild the message is from
 
 ## Documentation
 
 ### Features
+
 - Custom prefix
-- Join/Leave messages 
+- Join/Leave messages
 - Kick/ban users
 - Purge messages
 - Block custom word list
 - Mark messages as spoiler
 
 ### Join Message
+
 - Sends a message when a user joins the Server
 - Can be enabled/disabled with `!enable joinmessage` and `!disable joinmessage`
-- Can be configured with `!set joinmessage Welcome {user}` and `!set joinchannel #General`
+- Can be configured with `!joinmessage #General` and `!joinmessage #General Welcome {user}`
 
 ### Leave Message
+
 - Sends a message when a user leaves the Server
 - Can be enabled/disabled with `!enable leavemessage` and `!disable leavemessage`
-- Can be configured with `!set leavemessage Welcome {user}` and `!set leavechannel #General`
+- Can be configured with `!leavemessage #General` and `!leavemessage #General Goodbye {user}`
 
 ### Kick
+
 - Kicks the mentioned user
 - `!kick @user#0000`
 
 ### Ban
+
 - Bans the mentioned user
 - `!ban @user#0000`
 
 ### Purge
-- Deletes the specified number (<100) of messages
+
+- Deletes the specified number (1 to 99) of messages
 - `!purge 50`
 
 ### Enable/Disable
+
 - Used to enable or disable a command
 - `!enable kick` or `!disable kick`
 
-### Set
-- Used to set a custom value
-- `!set prefix !`
+### Prefix
+
+- Used to set a custom prefix
+- `!prefix +`
 
 ### Block/Unblock
+
 - Used to block a specified term
 - Admins are exempt from message filtering
 - `!block discord.gg`
 
 ### Spoiler
+
 - Used to mark messages as spoilers
 - lite-bot will delete and resend the message as a spoiler
-- `!spoiler` or `!spoiler https://discord.com/channels/758362896094199810/758363008450822165/798312328113291274`
+- `!spoiler` or `!spoiler https://discord.com/channels/123456789/123456789/123456789`

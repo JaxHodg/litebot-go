@@ -4,9 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
+	"unicode"
 
 	"github.com/bwmarrin/discordgo"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 // MemberHasPermission returns whether a member has the requested permission and whether they have admin
@@ -14,7 +18,7 @@ func MemberHasPermission(session *discordgo.Session, message *discordgo.Message,
 	if message.Member == nil {
 		return false, false, errors.New("nil member")
 	}
-	userPerm, err := session.UserChannelPermissions(message.Author.ID, message.ChannelID)
+	userPerm, err := session.State.UserChannelPermissions(message.Author.ID, message.ChannelID)
 	if err != nil {
 		fmt.Println(err)
 		//return false, false, err
@@ -40,6 +44,20 @@ func NewGenericEmbed(embedTitle, embedMsg string) *discordgo.MessageEmbed {
 	genericEmbed.Description = embedMsg
 	genericEmbed.Color = 0xD8DEE9
 	return genericEmbed
+}
+
+func NewModuleGenericEmbed(embedTitle, embedMsg, moduleID string, enabled bool) *discordgo.MessageEmbed {
+	moduleGenericEmbed := &discordgo.MessageEmbed{}
+	moduleGenericEmbed.Title = embedTitle
+	moduleGenericEmbed.Description = embedMsg
+	moduleGenericEmbed.Color = 0xD8DEE9
+	moduleGenericEmbed.Footer = &discordgo.MessageEmbedFooter{
+		Text: moduleID + " Disabled",
+	}
+	if enabled {
+		moduleGenericEmbed.Footer.Text = moduleID + " Enabled"
+	}
+	return moduleGenericEmbed
 }
 
 //NewErrorEmbed returns an error embed
@@ -142,4 +160,51 @@ func CanSpeak(session *discordgo.Session, channelID string) bool {
 		return true
 	}
 	return false
+}
+
+func ExtractUserID(text string) string {
+	re := regexp.MustCompile(`<@!?(\d*)>`)
+	substring := re.FindStringSubmatch(text)
+
+	if len(substring) != 0 {
+		return substring[1]
+	} else {
+		return ""
+	}
+}
+
+func ExtractChannelID(text string) string {
+	re := regexp.MustCompile(`<#(\d*)>`)
+	substring := re.FindStringSubmatch(text)
+
+	if len(substring) != 0 {
+		return substring[1]
+	} else {
+		return ""
+	}
+}
+
+func ExtractMessageID(text string) string {
+	re := regexp.MustCompile(`https:\/\/discord\.com\/channels\/\d+\/\d+\/(\d+)`)
+	substring := re.FindStringSubmatch(text)
+
+	if len(substring) != 0 {
+		return substring[1]
+	} else {
+		return ""
+	}
+}
+
+func ValidateUserID(session *discordgo.Session, userID string) bool {
+	_, err := session.User(userID)
+	return err == nil
+}
+
+func NormaliseString(text string) string {
+	isMn := func(r rune) bool {
+		return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+	}
+	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
+	result, _, _ := transform.String(t, text)
+	return result
 }

@@ -13,9 +13,12 @@ import (
 func init() {
 	manager.RegisterCommand(
 		&manager.Command{
-			Name:                "Block",
-			Function:            cmdBlock,
-			Description:         "Blocks the specified term",
+			Name: "Block",
+
+			Function:    cmdBlock,
+			Description: "Blocks the specified term",
+			HelpText:    "`{PREFIX}block frick`\nTip: Admin messages won't be blocked",
+
 			RequiredPermissions: discordgo.PermissionAdministrator,
 			GuildOnly:           true,
 		},
@@ -23,14 +26,24 @@ func init() {
 }
 
 func cmdBlock(args []string, session *discordgo.Session, event *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	data := strings.ToLower(strings.Join(args, " "))
-	if data == "" {
-		return functions.NewErrorEmbed("You must specify a term to block")
-	}
-	if functions.Find(state.CheckList(event.Message.GuildID, "blocked"), data) != -1 {
-		return functions.NewErrorEmbed("`" + data + "` is already blocked")
+	term := ""
+	if len(args) >= 1 {
+		term = strings.Join(args, " ")
+		term = strings.TrimSpace(term)
+		term = functions.NormaliseString(term)
+		term = strings.ToLower(term)
 	}
 
-	state.AddToList(event.Message.GuildID, "blocked", data)
-	return functions.NewGenericEmbed("Blocked", "Successfully blocked `"+data+"`")
+	if term == "" {
+		return functions.NewErrorEmbed("You must specify a term to block")
+	}
+
+	list, _ := state.GetList(event.GuildID, "BlockTerm", "BlockedTerms")
+	enabled, _ := state.GetEnabled(event.GuildID, "BlockTerm")
+	if functions.Find(list, term) != -1 {
+		return functions.NewModuleGenericEmbed("BlockedTerms", "`"+term+"` is already blocked", "BlockTerm", enabled)
+	}
+
+	state.AddToList(event.Message.GuildID, "BlockTerm", "BlockedTerms", term)
+	return functions.NewModuleGenericEmbed("BlockedTerms", "Successfully blocked `"+term+"`", "BlockTerm", enabled)
 }
