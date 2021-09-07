@@ -1,6 +1,8 @@
 # litebot
 
-Lite-bot is a simple and customizable bot for server moderation with features like marking a message as spoilers and blocking terms. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are always the way.
+Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, purge, and blocking words. Nearly everything can be disabled or customized.
+
+Lite-bot is a simple and customizable bot for server moderation with features like marking a message as a spoiler and blocking terms. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are always the way.
 
 ## Documentation
 
