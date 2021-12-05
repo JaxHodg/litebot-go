@@ -71,7 +71,7 @@ Lite-bot is a simple and customizable bot for server moderation with features li
 
 ## TODO
 
-- Move other's messages
+- Move/copy messages
   -!move #other-channel to move the message in the new channel
 - Intro Music
   - Users can set a music clip that will play when they join the voice channel
