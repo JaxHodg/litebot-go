@@ -1,7 +1,5 @@
 # litebot
 
-Lite-bot is a simple and customizable bot for server moderation with features like kick, ban, purge, and blocking words. Nearly everything can be disabled or customized.
-
 Lite-bot is a simple and customizable bot for server moderation with features like marking a message as a spoiler and blocking terms. Nearly everything can be disabled or customized so you only have to worry about the features you actually want. More features are always the way.
 
 ## Documentation
@@ -69,17 +67,11 @@ Lite-bot is a simple and customizable bot for server moderation with features li
 - lite-bot will delete and resend the message as a spoiler
 - `!spoiler` or `!spoiler https://discord.com/channels/123456789/123456789/123456789`
 
-## TODO
+## Upcoming features
 
 - Move/copy messages
   -!move #other-channel to move the message in the new channel
-- Intro Music
-  - Users can set a music clip that will play when they join the voice channel
-  - Probably really annoying so limit clip length and/or number of daily plays
 - Queue system
   - Useful for games like Among us or Animal Crossing where limited lobby size
 - React for role system
   - Useful for big servers
-- Fix DMs
-  - Not really necessary right now
-  - Can't process DMs because it can't determine what Guild the message is from
